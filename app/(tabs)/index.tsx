@@ -1,75 +1,78 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet, SectionList, FlatList, View, Text } from "react-native";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { useCustomSWR } from "@/hooks/useCustomSWR";
+import { tvMazeApiRoute } from "@/constants/ApiRoutes";
+import { shuffle, slice, toString } from "lodash";
+import { TVShow } from "@/constants/Types";
+import { Image } from "expo-image";
+import Animated from "react-native-reanimated";
 
 export default function HomeScreen() {
+  const { data } = useCustomSWR<TVShow>(tvMazeApiRoute("shows"));
+
+  const suffledData = shuffle(data);
+
+  const sections = [
+    {
+      title: "Must-See Picks of the Day",
+      data: slice(suffledData, 0, 10),
+    },
+    {
+      title: "Trending & Hidden Gems",
+      data: slice(suffledData, 10, 20),
+    },
+    {
+      title: "Watchlist Roulette",
+      data: slice(suffledData, 20, 30),
+    },
+  ];
+  const blurhash =
+    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SectionList
+      style={{ flex: 1, backgroundColor: "#000", paddingTop: 36 }}
+      keyExtractor={(item, index) => item.id?.toString?.() ?? index.toString()}
+      renderSectionHeader={({ section }) => (
+        <>
+          <ThemedText style={{ color: "#fff", fontWeight: "700", fontSize: 21, paddingVertical: 16 }}>{section.title}</ThemedText>
+          <Animated.FlatList
+            horizontal
+            contentContainerStyle={{ backgroundColor: "#000" }}
+            style={{ backgroundColor: "#000" }}
+            data={section.data}
+            keyExtractor={(item) => toString(item.id)}
+            renderItem={({ item }) => (
+              <ThemedView
+                style={{
+                  paddingInline: 16,
+                  backgroundColor: "#000",
+                }}
+              >
+                <Image
+                  style={styles.image}
+                  source={item.image.medium}
+                  placeholder={{ blurhash }}
+                  contentFit="cover"
+                />
+              </ThemedView>
+            )}
+          />
+        </>
+      )}
+      renderItem={() => <></>}
+      sections={sections}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  image: {
+    flex: 1,
+    height: 195,
+    width: 120,
+    backgroundColor: "#0553",
+    borderRadius: 4,
   },
 });

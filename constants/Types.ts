@@ -9,7 +9,12 @@ interface TvCountryObj {
   timezone: string;
 }
 
-type TvLinkObj = Record<"show" | "character" | "episode", { href: string; name: string }>;
+interface TvLinkObj {
+  href: string;
+  name: string;
+}
+
+type TvLinkObjs = Record<"show" | "character" | "episode", TvLinkObj>;
 
 interface Embedded<T = unknown> {
   _embedded?: T;
@@ -76,6 +81,9 @@ export interface TvShowEpisode<T = unknown> extends Embedded<T> {
   rating: {
     average: number;
   };
+  _links: {
+    show: TvLinkObj;
+  };
 }
 
 export type TvShowDetail = TvShow<{
@@ -89,6 +97,6 @@ export type TvEpisodeDetail = TvShowEpisode<{
 }>;
 
 export type TvShowPeopleDetail = TvShowPeople<{
-  castcredits: { _links: TvLinkObj }[];
-  guestcastcredits: { _links: TvLinkObj }[];
+  castcredits: { _links: TvLinkObjs }[];
+  guestcastcredits: { _links: TvLinkObjs }[];
 }>;

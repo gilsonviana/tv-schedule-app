@@ -16,6 +16,20 @@ export default function HomeScreen() {
 
   const sections = [
     {
+      title: "Favorites",
+      data: [
+        {
+          id: 169,
+          image: {
+            medium:
+              "https://static.tvmaze.com/uploads/images/medium_portrait/501/1253519.jpg",
+            original:
+              "https://static.tvmaze.com/uploads/images/original_untouched/501/1253519.jpg",
+          },
+        },
+      ],
+    },
+    {
       title: "Must-See Picks of the Day",
       data: slice(suffledData, 0, 10),
     },

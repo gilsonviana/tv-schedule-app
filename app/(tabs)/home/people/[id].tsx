@@ -1,15 +1,23 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { getTvPeopleById } from "@/constants/ApiRoutes";
-import { TvShowPeopleDetail } from "@/constants/Types";
+import {
+  TvEpisodeDetail,
+  TvShowDetail,
+  TvShowPeopleDetail,
+} from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
-import { toString } from "lodash";
+import { Link, useLocalSearchParams } from "expo-router";
+import { map, size, slice, toString } from "lodash";
 import { ThemedText } from "@/components/ThemedText";
-import { Badge } from "@/components/Badge";
 import { ThemedView } from "@/components/ThemedView";
 import Animated from "react-native-reanimated";
+import Skeleton from "@/components/Skeleton";
+import { useBatchFetch } from "@/hooks/useBatchFetch";
+
+const blurhash =
+  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 export default function PeopleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -17,8 +25,19 @@ export default function PeopleDetailScreen() {
     getTvPeopleById(toString(id))
   );
 
-  const blurhash =
-    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+  const guestCastLinks = map(
+    data?._embedded?.guestcastcredits,
+    (item) => item._links.episode.href
+  );
+  const castCreditLinks = map(
+    data?._embedded?.castcredits,
+    (item) => item._links.show.href
+  );
+
+  const { isLoading: isLoadingEpisodes, data: episodes } =
+    useBatchFetch<TvEpisodeDetail>(slice(guestCastLinks, 0, 5));
+  const { isLoading: isLoadingShows, data: shows } =
+    useBatchFetch<TvShowDetail>(slice(castCreditLinks, 0, 5));
 
   return (
     <ParallaxScrollView
@@ -47,20 +66,75 @@ export default function PeopleDetailScreen() {
       >
         {data?.name}
       </ThemedText>
-      {/* {data?.airdate && (
+      {data?.birthday && (
         <ThemedText style={{ color: "#ddd", fontSize: 14 }}>
-          Aired on {""}
-          {new Date(data.airdate).toLocaleDateString("en-US", {
+          Born on {""}
+          {new Date(data.birthday).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
           })}
         </ThemedText>
-      )} */}
-      {/* <ThemedText stripped style={{ color: "#fff" }}>
-        {data?.summary}
-      </ThemedText>
-      {data?._embedded?.guestcast && (
+      )}
+      {isLoadingShows && (
+        <>
+          <Skeleton width={120} height={24} />
+          <View style={{ flexDirection: "row" }}>
+            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
+            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
+            <Skeleton width={125} height={195} />
+          </View>
+        </>
+      )}
+      {!isLoadingShows && size(shows) > 0 && (
+        <>
+          <ThemedText
+            style={{
+              fontWeight: "700",
+              fontSize: 21,
+              marginTop: 24,
+              marginBottom: 8,
+              color: "#fff",
+            }}
+          >
+            Cast
+          </ThemedText>
+          <Animated.FlatList
+            horizontal
+            data={shows}
+            keyExtractor={(item) => toString(item.id)}
+            renderItem={({ item }) => (
+              <Link href={`../shows/${id}`} style={{ marginRight: 16 }}>
+                <ThemedView style={{ backgroundColor: "#000" }}>
+                  <Image
+                    source={item?.image?.original ?? item?.image?.medium}
+                    style={styles.image}
+                    placeholder={{ blurhash }}
+                    contentFit="cover"
+                    contentPosition="top center"
+                  />
+                  <ThemedText
+                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                  >
+                    {item.name}
+                  </ThemedText>
+                </ThemedView>
+              </Link>
+            )}
+          />
+        </>
+      )}
+      {isLoadingEpisodes && (
+        <>
+          <Skeleton width={120} height={24} />
+          <View style={{ flexDirection: "row" }}>
+            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
+            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
+            <Skeleton width={125} height={195} />
+          </View>
+        </>
+      )}
+      {!isLoadingEpisodes && size(episodes) > 0 && (
         <>
           <ThemedText
             style={{
@@ -75,32 +149,32 @@ export default function PeopleDetailScreen() {
           </ThemedText>
           <Animated.FlatList
             horizontal
-            data={data?._embedded?.guestcast}
-            keyExtractor={(item) => toString(item.character.id)}
+            data={episodes}
+            keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <ThemedView style={{ marginRight: 16, backgroundColor: "#000" }}>
-                <Image
-                  source={
-                    item.person.image?.original || item.person.image?.medium
-                  }
-                  style={styles.image}
-                  placeholder={{ blurhash }}
-                  contentFit="cover"
-                  contentPosition="top center"
-                />
-                <ThemedText
-                  style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                >
-                  {item.person.name}
-                </ThemedText>
-                <ThemedText style={{ color: "#ddd" }}>
-                  {item.character.name}
-                </ThemedText>
-              </ThemedView>
+              <Link href={`../episode/${id}`} style={{ marginRight: 16 }}>
+                <ThemedView style={{ backgroundColor: "#000" }}>
+                  <Image
+                    source={item?.image?.original ?? item?.image?.medium}
+                    style={styles.image}
+                    placeholder={{ blurhash }}
+                    contentFit="cover"
+                    contentPosition="top center"
+                  />
+                  <ThemedText
+                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                  >
+                    {item.name}
+                  </ThemedText>
+                  <ThemedText style={{ color: "#ddd", marginTop: 8 }}>
+                    {item._links.show.name}
+                  </ThemedText>
+                </ThemedView>
+              </Link>
             )}
           />
         </>
-      )} */}
+      )}
     </ParallaxScrollView>
   );
 }

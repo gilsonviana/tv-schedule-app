@@ -15,7 +15,7 @@ import getUnicodeFlagIcon from "country-flag-icons/unicode";
 import { openBrowserAsync } from "expo-web-browser";
 import { Badge } from "@/components/Badge";
 import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ShowsDetailScreen() {
   const [selectedSeason, setSelectedSeason] = useState<number>();
@@ -30,6 +30,17 @@ export default function ShowsDetailScreen() {
 
   const blurhash =
     "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+
+  useEffect(() => {
+    const setInitialSeason = () => {
+      setSelectedSeason(data?._embedded?.seasons[0].id);
+    };
+
+    if (!selectedSeason) {
+      setInitialSeason();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   return (
     <ParallaxScrollView
@@ -55,7 +66,7 @@ export default function ShowsDetailScreen() {
       <ThemedText stripped style={{ color: "#fff" }}>
         {data?.summary}
       </ThemedText>
-      {data?._embedded?.cast && (
+      {size(data?._embedded?.cast) > 0 && (
         <>
           <ThemedText
             style={{
@@ -114,7 +125,7 @@ export default function ShowsDetailScreen() {
           >
             Schedule
           </ThemedText>
-          {data?.network.name && (
+          {data?.network?.name && (
             <ThemedView style={{ backgroundColor: "#000" }}>
               <ThemedText
                 style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}

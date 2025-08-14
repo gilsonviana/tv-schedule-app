@@ -8,6 +8,7 @@ import { TvShow } from "@/constants/Types";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { Link } from "expo-router";
+import { blurhash } from "@/constants/Misc";
 
 export default function HomeScreen() {
   const { data } = useCustomSWR<TvShow[]>(getTvShows());
@@ -42,8 +43,7 @@ export default function HomeScreen() {
       data: slice(suffledData, 20, 30),
     },
   ];
-  const blurhash =
-    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+
 
   return (
     <SectionList

@@ -9,15 +9,12 @@ import {
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
-import { map, size, slice, toString } from "lodash";
+import { last, map, size, slice, split, toString } from "lodash";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import Animated from "react-native-reanimated";
 import Skeleton from "@/components/Skeleton";
 import { useBatchFetch } from "@/hooks/useBatchFetch";
-
-const blurhash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+import { blurhash } from "@/constants/Misc";
 
 export default function PeopleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -104,8 +101,8 @@ export default function PeopleDetailScreen() {
             data={shows}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link href={`../shows/${id}`} style={{ marginRight: 16 }}>
-                <ThemedView style={{ backgroundColor: "#000" }}>
+              <Link href={`../shows/${item.id}`} style={{ marginRight: 16 }}>
+                <View>
                   <Image
                     source={item?.image?.original ?? item?.image?.medium}
                     style={styles.image}
@@ -118,7 +115,7 @@ export default function PeopleDetailScreen() {
                   >
                     {item.name}
                   </ThemedText>
-                </ThemedView>
+                </View>
               </Link>
             )}
           />
@@ -152,25 +149,32 @@ export default function PeopleDetailScreen() {
             data={episodes}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link href={`../episode/${id}`} style={{ marginRight: 16 }}>
-                <ThemedView style={{ backgroundColor: "#000" }}>
-                  <Image
-                    source={item?.image?.original ?? item?.image?.medium}
-                    style={styles.image}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                    contentPosition="top center"
-                  />
-                  <ThemedText
-                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                  >
-                    {item.name}
-                  </ThemedText>
+              <View style={{ marginRight: 16 }}>
+                <Link href={`../episodes/${item.id}`}>
+                  <View>
+                    <Image
+                      source={item?.image?.original ?? item?.image?.medium}
+                      style={styles.image}
+                      placeholder={{ blurhash }}
+                      contentFit="cover"
+                      contentPosition="top center"
+                    />
+                    <ThemedText
+                      style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                    >
+                      {item.name}
+                    </ThemedText>
+                  </View>
+                </Link>
+                <Link
+                  href={`../shows/${last(split(item._links.show.href, "/"))}`}
+                  style={{ marginRight: 16 }}
+                >
                   <ThemedText style={{ color: "#ddd", marginTop: 8 }}>
                     {item._links.show.name}
                   </ThemedText>
-                </ThemedView>
-              </Link>
+                </Link>
+              </View>
             )}
           />
         </>

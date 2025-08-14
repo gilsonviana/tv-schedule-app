@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { TvEpisodeDetail } from "@/constants/Types";
 import { isEmpty } from "lodash";
 
 export const useBatchFetch = <T>(urls: string[]) => {

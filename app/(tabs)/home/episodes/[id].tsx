@@ -10,15 +10,13 @@ import { ThemedText } from "@/components/ThemedText";
 import { Badge } from "@/components/Badge";
 import { ThemedView } from "@/components/ThemedView";
 import Animated from "react-native-reanimated";
+import { blurhash } from "@/constants/Misc";
 
 export default function ShowsEpisodeDetailScreen() {
   const { id } = useLocalSearchParams();
   const { data } = useCustomSWR<TvEpisodeDetail>(
     getTvEpisodeById(toString(id))
   );
-
-  const blurhash =
-    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
   return (
     <ParallaxScrollView
@@ -82,10 +80,11 @@ export default function ShowsEpisodeDetailScreen() {
             data={data?._embedded?.guestcast}
             keyExtractor={(item) => toString(item.character.id)}
             renderItem={({ item }) => (
-              <Link href={`/home/people/${item.person.id}`}>
-                <ThemedView
-                  style={{ marginRight: 16, backgroundColor: "#000" }}
-                >
+              <Link
+                href={`/home/people/${item.person.id}`}
+                style={{ marginRight: 16 }}
+              >
+                <ThemedView style={{ backgroundColor: "#000" }}>
                   <Image
                     source={
                       item.person.image?.original || item.person.image?.medium

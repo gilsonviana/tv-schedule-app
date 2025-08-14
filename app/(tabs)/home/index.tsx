@@ -1,15 +1,16 @@
-import { StyleSheet, SectionList, FlatList, View, Text } from "react-native";
+import { StyleSheet, SectionList } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
-import { tvMazeApiRoute } from "@/constants/ApiRoutes";
+import { getTvShows } from "@/constants/ApiRoutes";
 import { shuffle, slice, toString } from "lodash";
-import { TVShow } from "@/constants/Types";
+import { TvShow } from "@/constants/Types";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
+import { Link } from "expo-router";
 
 export default function HomeScreen() {
-  const { data } = useCustomSWR<TVShow>(tvMazeApiRoute("shows"));
+  const { data } = useCustomSWR<TvShow[]>(getTvShows());
 
   const suffledData = shuffle(data);
 
@@ -36,7 +37,16 @@ export default function HomeScreen() {
       keyExtractor={(item, index) => item.id?.toString?.() ?? index.toString()}
       renderSectionHeader={({ section }) => (
         <>
-          <ThemedText style={{ color: "#fff", fontWeight: "700", fontSize: 21, paddingVertical: 16 }}>{section.title}</ThemedText>
+          <ThemedText
+            style={{
+              color: "#fff",
+              fontWeight: "700",
+              fontSize: 21,
+              paddingVertical: 16,
+            }}
+          >
+            {section.title}
+          </ThemedText>
           <Animated.FlatList
             horizontal
             contentContainerStyle={{ backgroundColor: "#000" }}
@@ -44,19 +54,21 @@ export default function HomeScreen() {
             data={section.data}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <ThemedView
-                style={{
-                  paddingInline: 16,
-                  backgroundColor: "#000",
-                }}
-              >
-                <Image
-                  style={styles.image}
-                  source={item.image.medium}
-                  placeholder={{ blurhash }}
-                  contentFit="cover"
-                />
-              </ThemedView>
+              <Link href={`/(tabs)/home/shows/${item.id}`}>
+                <ThemedView
+                  style={{
+                    paddingInline: 16,
+                    backgroundColor: "#000",
+                  }}
+                >
+                  <Image
+                    style={styles.image}
+                    source={item.image.medium}
+                    placeholder={{ blurhash }}
+                    contentFit="cover"
+                  />
+                </ThemedView>
+              </Link>
             )}
           />
         </>

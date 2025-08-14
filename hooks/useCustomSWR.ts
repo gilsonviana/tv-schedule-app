@@ -12,6 +12,6 @@ const enableRequest = (url: string, enabled = true): string | null => {
 };
 
 export const useCustomSWR = <T>(url: string, opts?: UseCustomSWRParams) => {
-  const obj = useSWR<T[]>(enableRequest(url, opts?.enabled), fetcher);
+  const obj = useSWR<T>(enableRequest(url, opts?.enabled), fetcher);
   return obj;
 };

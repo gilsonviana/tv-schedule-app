@@ -1,9 +1,4 @@
-export const tvMazeBaseAPI = "https://api.tvmaze.com";
+const tvMazeBaseAPI = "https://api.tvmaze.com";
 
-export const tvMazeApiRoutes = {
-  shows: "/shows",
-} as const;
-
-export const tvMazeApiRoute = (route: keyof typeof tvMazeApiRoutes) => {
-  return tvMazeBaseAPI + tvMazeApiRoutes[route]
-};
+export const getTvShows = () => `${tvMazeBaseAPI}/shows`;
+export const getTvShowById = (resourceId: number | string) => `${tvMazeBaseAPI}/shows/${resourceId}?embed[]=seasons&embed[]=episodes&embed[]=cast`

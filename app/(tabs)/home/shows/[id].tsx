@@ -35,7 +35,7 @@ export default function ShowsDetailScreen() {
     <ParallaxScrollView
       headerImage={
         <Image
-          source={data?.image.original ?? data?.image.medium}
+          source={data?.image?.original ?? data?.image?.medium}
           style={styles.image}
           placeholder={{ blurhash }}
           contentFit="cover"
@@ -73,25 +73,30 @@ export default function ShowsDetailScreen() {
             data={data?._embedded?.cast}
             keyExtractor={(item) => toString(item.character.id)}
             renderItem={({ item }) => (
-              <ThemedView style={{ marginRight: 16, backgroundColor: "#000" }}>
-                <Image
-                  source={
-                    item.person.image.original || item.person.image.medium
-                  }
-                  style={styles.image}
-                  placeholder={{ blurhash }}
-                  contentFit="cover"
-                  contentPosition="top center"
-                />
-                <ThemedText
-                  style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                >
-                  {item.person.name}
-                </ThemedText>
-                <ThemedText style={{ color: "#ddd" }}>
-                  {item.character.name}
-                </ThemedText>
-              </ThemedView>
+              <Link
+                style={{ marginRight: 16 }}
+                href={`/home/people/${item.person.id}`}
+              >
+                <ThemedView style={{ backgroundColor: "#000" }}>
+                  <Image
+                    source={
+                      item.person.image?.original || item.person.image?.medium
+                    }
+                    style={styles.image}
+                    placeholder={{ blurhash }}
+                    contentFit="cover"
+                    contentPosition="top center"
+                  />
+                  <ThemedText
+                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                  >
+                    {item.person.name}
+                  </ThemedText>
+                  <ThemedText style={{ color: "#ddd" }}>
+                    {item.character.name}
+                  </ThemedText>
+                </ThemedView>
+              </Link>
             )}
           />
         </>
@@ -210,7 +215,7 @@ export default function ShowsDetailScreen() {
                   placeholder={{ blurhash }}
                   contentFit="cover"
                   contentPosition="top center"
-                  source={item.image.original ?? item.image.medium}
+                  source={item.image?.original ?? item.image?.medium}
                 />
                 <ThemedView
                   style={{ flex: 2, backgroundColor: "#000", marginLeft: 8 }}

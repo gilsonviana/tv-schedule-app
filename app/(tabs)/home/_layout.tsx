@@ -6,6 +6,7 @@ export default function HomeLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="shows/[id]" />
       <Stack.Screen name="episodes/[id]" />
+      <Stack.Screen name="people/[id]" />
     </Stack>
   );
 }

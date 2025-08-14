@@ -1,20 +1,20 @@
 import { StyleSheet } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { getTvEpisodeById } from "@/constants/ApiRoutes";
-import { TvEpisodeDetail } from "@/constants/Types";
+import { getTvPeopleById } from "@/constants/ApiRoutes";
+import { TvShowPeopleDetail } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
-import { Link, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { toString } from "lodash";
 import { ThemedText } from "@/components/ThemedText";
 import { Badge } from "@/components/Badge";
 import { ThemedView } from "@/components/ThemedView";
 import Animated from "react-native-reanimated";
 
-export default function ShowsEpisodeDetailScreen() {
+export default function PeopleDetailScreen() {
   const { id } = useLocalSearchParams();
-  const { data } = useCustomSWR<TvEpisodeDetail>(
-    getTvEpisodeById(toString(id))
+  const { data } = useCustomSWR<TvShowPeopleDetail>(
+    getTvPeopleById(toString(id))
   );
 
   const blurhash =
@@ -45,13 +45,9 @@ export default function ShowsEpisodeDetailScreen() {
           lineHeight: 32,
         }}
       >
-        {data?.number}. {""}
         {data?.name}
       </ThemedText>
-      <ThemedView style={{ backgroundColor: "#000", flexDirection: "row" }}>
-        <Badge text={`Season ${data?.season}`} />
-      </ThemedView>
-      {data?.airdate && (
+      {/* {data?.airdate && (
         <ThemedText style={{ color: "#ddd", fontSize: 14 }}>
           Aired on {""}
           {new Date(data.airdate).toLocaleDateString("en-US", {
@@ -60,8 +56,8 @@ export default function ShowsEpisodeDetailScreen() {
             day: "numeric",
           })}
         </ThemedText>
-      )}
-      <ThemedText stripped style={{ color: "#fff" }}>
+      )} */}
+      {/* <ThemedText stripped style={{ color: "#fff" }}>
         {data?.summary}
       </ThemedText>
       {data?._embedded?.guestcast && (
@@ -82,33 +78,29 @@ export default function ShowsEpisodeDetailScreen() {
             data={data?._embedded?.guestcast}
             keyExtractor={(item) => toString(item.character.id)}
             renderItem={({ item }) => (
-              <Link href={`/home/people/${item.person.id}`}>
-                <ThemedView
-                  style={{ marginRight: 16, backgroundColor: "#000" }}
+              <ThemedView style={{ marginRight: 16, backgroundColor: "#000" }}>
+                <Image
+                  source={
+                    item.person.image?.original || item.person.image?.medium
+                  }
+                  style={styles.image}
+                  placeholder={{ blurhash }}
+                  contentFit="cover"
+                  contentPosition="top center"
+                />
+                <ThemedText
+                  style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
                 >
-                  <Image
-                    source={
-                      item.person.image?.original || item.person.image?.medium
-                    }
-                    style={styles.image}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                    contentPosition="top center"
-                  />
-                  <ThemedText
-                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                  >
-                    {item.person.name}
-                  </ThemedText>
-                  <ThemedText style={{ color: "#ddd" }}>
-                    {item.character.name}
-                  </ThemedText>
-                </ThemedView>
-              </Link>
+                  {item.person.name}
+                </ThemedText>
+                <ThemedText style={{ color: "#ddd" }}>
+                  {item.character.name}
+                </ThemedText>
+              </ThemedView>
             )}
           />
         </>
-      )}
+      )} */}
     </ParallaxScrollView>
   );
 }

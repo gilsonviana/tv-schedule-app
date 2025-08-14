@@ -3,7 +3,19 @@ interface TvImageObj {
   original: string;
 }
 
-export interface TvShow<T = unknown> {
+interface TvCountryObj {
+  name: string;
+  code: string;
+  timezone: string;
+}
+
+type TvLinkObj = Record<"show" | "character" | "episode", { href: string; name: string }>;
+
+interface Embedded<T = unknown> {
+  _embedded?: T;
+}
+
+export interface TvShow<T = unknown> extends Embedded<T> {
   id: number;
   name: string;
   summary: string;
@@ -16,14 +28,9 @@ export interface TvShow<T = unknown> {
   network: {
     id: number;
     name: string;
-    country: {
-      name: string;
-      code: string;
-      timezone: string;
-    };
+    country: TvCountryObj;
     officialSite: string;
   };
-  _embedded?: T;
 }
 
 export interface TvShowCast {
@@ -48,7 +55,17 @@ export interface TvShowSeason {
   premiereDate: string;
 }
 
-export interface TvShowEpisode {
+export interface TvShowPeople<T = unknown> extends Embedded<T> {
+  id: number;
+  name: string;
+  country: TvCountryObj;
+  birthday: string;
+  deathday: string | null;
+  gender: string;
+  image: TvImageObj;
+}
+
+export interface TvShowEpisode<T = unknown> extends Embedded<T> {
   id: number;
   season: number;
   number: number;
@@ -58,11 +75,20 @@ export interface TvShowEpisode {
   airdate: string;
   rating: {
     average: number;
-  }
+  };
 }
 
 export type TvShowDetail = TvShow<{
   seasons: TvShowEpisode[];
   episodes: TvShowSeason[];
   cast: TvShowCast[];
+}>;
+
+export type TvEpisodeDetail = TvShowEpisode<{
+  guestcast: TvShowCast[];
+}>;
+
+export type TvShowPeopleDetail = TvShowPeople<{
+  castcredits: { _links: TvLinkObj }[];
+  guestcastcredits: { _links: TvLinkObj }[];
 }>;

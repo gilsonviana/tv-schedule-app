@@ -54,7 +54,7 @@ export default function HomeScreen() {
             data={section.data}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link href={`/(tabs)/home/shows/${item.id}`}>
+              <Link href={`/home/shows/${item.id}`}>
                 <ThemedView
                   style={{
                     paddingInline: 16,

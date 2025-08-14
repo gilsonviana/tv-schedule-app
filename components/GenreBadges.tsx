@@ -1,5 +1,6 @@
 import { isEmpty, map } from "lodash";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Badge } from "./Badge";
 
 interface GenreBadgeProps {
   genres?: string[];
@@ -10,32 +11,28 @@ const colorMap: Record<string, string> = {
   Crime: "#E97451",
   Thriller: "#FFA07A",
   Anime: "#FF9F80",
-  Horror: '#FF6B6B',
-  Supernatural: '#C3B1E1',
-  Family: '#98FF98',
-  Romance: '#FFB6C1',
-  'Science-Fiction': '#7EC8E3',
-  Adventure: '#FF6961',
-  Comedy: '#FFD700'
+  Horror: "#FF6B6B",
+  Supernatural: "#C3B1E1",
+  Family: "#98FF98",
+  Romance: "#FFB6C1",
+  "Science-Fiction": "#7EC8E3",
+  Adventure: "#FF6961",
+  Comedy: "#FFD700",
 };
 
 export const GenreBadges = ({ genres }: GenreBadgeProps) => {
   if (isEmpty(genres)) {
-    return <></>
+    return <></>;
   }
 
   return (
     <View style={styles.wrapper}>
       {map(genres, (genre) => (
-        <View
+        <Badge
           key={genre}
-          style={[
-            styles.container,
-            { backgroundColor: colorMap[genre] ?? 'gray' },
-          ]}
-        >
-          <Text style={styles.text}>{genre}</Text>
-        </View>
+          text={genre}
+          style={{ backgroundColor: colorMap[genre] ?? "gray" }}
+        />
       ))}
     </View>
   );
@@ -44,16 +41,7 @@ export const GenreBadges = ({ genres }: GenreBadgeProps) => {
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: "row",
-    flexWrap: 'wrap',
-    gap: 8
-  },
-  container: {
-    borderRadius: 6,
-    alignItems: 'flex-start',
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: '500',
-    padding: 4,
+    flexWrap: "wrap",
+    gap: 8,
   },
 });

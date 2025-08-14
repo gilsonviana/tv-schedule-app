@@ -3,33 +3,24 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { getTvShows } from "@/constants/ApiRoutes";
-import { shuffle, slice, toString } from "lodash";
+import { isEmpty, shuffle, slice, toString } from "lodash";
 import { TvShow } from "@/constants/Types";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { Link } from "expo-router";
 import { blurhash } from "@/constants/Misc";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/reducers";
 
 export default function HomeScreen() {
+  const { favoriteShows, favoriteEpisodes } = useSelector(
+    (state: RootState) => state.favorites
+  );
   const { data } = useCustomSWR<TvShow[]>(getTvShows());
 
   const suffledData = shuffle(data);
 
   const sections = [
-    {
-      title: "Favorites",
-      data: [
-        {
-          id: 169,
-          image: {
-            medium:
-              "https://static.tvmaze.com/uploads/images/medium_portrait/501/1253519.jpg",
-            original:
-              "https://static.tvmaze.com/uploads/images/original_untouched/501/1253519.jpg",
-          },
-        },
-      ],
-    },
     {
       title: "Must-See Picks of the Day",
       data: slice(suffledData, 0, 10),
@@ -38,12 +29,21 @@ export default function HomeScreen() {
       title: "Trending & Hidden Gems",
       data: slice(suffledData, 10, 20),
     },
-    {
-      title: "Watchlist Roulette",
-      data: slice(suffledData, 20, 30),
-    },
   ];
 
+  if (!isEmpty(favoriteShows)) {
+    sections.push({
+      title: "Favorite Shows",
+      data: favoriteShows as TvShow[],
+    });
+  }
+
+  if (!isEmpty(favoriteEpisodes)) {
+    sections.push({
+      title: "Favorite Episodes",
+      data: favoriteEpisodes as TvShow[],
+    });
+  }
 
   return (
     <SectionList

@@ -1,16 +1,17 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { getTvEpisodeById } from "@/constants/ApiRoutes";
 import { TvEpisodeDetail } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
-import { toString } from "lodash";
+import { toNumber, toString } from "lodash";
 import { ThemedText } from "@/components/ThemedText";
 import { Badge } from "@/components/Badge";
 import { ThemedView } from "@/components/ThemedView";
 import Animated from "react-native-reanimated";
 import { blurhash } from "@/constants/Misc";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export default function ShowsEpisodeDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -35,17 +36,22 @@ export default function ShowsEpisodeDetailScreen() {
       }}
       style={{ backgroundColor: "#000" }}
     >
-      <ThemedText
-        style={{
-          color: "#fff",
-          fontWeight: "700",
-          fontSize: 32,
-          lineHeight: 32,
-        }}
-      >
-        {data?.number}. {""}
-        {data?.name}
-      </ThemedText>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <ThemedText
+          style={{
+            color: "#fff",
+            fontWeight: "700",
+            fontSize: 32,
+            lineHeight: 32,
+          }}
+        >
+          {data?.number}. {""}
+          {data?.name}
+        </ThemedText>
+        {data?.image && (
+          <FavoriteButton type="episodes" id={toNumber(id)} image={data.image} />
+        )}
+      </View>
       <ThemedView style={{ backgroundColor: "#000", flexDirection: "row" }}>
         <Badge text={`Season ${data?.season}`} />
       </ThemedView>

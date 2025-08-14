@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -6,7 +6,7 @@ import { getTvEpisodesBySeasonId, getTvShowById } from "@/constants/ApiRoutes";
 import { TvShowDetail, TvShowEpisode } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Link, useLocalSearchParams } from "expo-router";
-import { map, size, toString } from "lodash";
+import { map, size, toNumber, toString } from "lodash";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { GenreBadges } from "@/components/GenreBadges";
@@ -17,6 +17,7 @@ import { Badge } from "@/components/Badge";
 import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import { blurhash } from "@/constants/Misc";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export default function ShowsDetailScreen() {
   const [selectedSeason, setSelectedSeason] = useState<number>();
@@ -57,9 +58,14 @@ export default function ShowsDetailScreen() {
       }}
       style={{ backgroundColor: "#000" }}
     >
-      <ThemedText style={{ color: "#fff", fontWeight: "700", fontSize: 32 }}>
-        {data?.name}
-      </ThemedText>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <ThemedText style={{ color: "#fff", fontWeight: "700", fontSize: 32 }}>
+          {data?.name}
+        </ThemedText>
+        {data?.image && (
+          <FavoriteButton type="shows" id={toNumber(id)} image={data.image} />
+        )}
+      </View>
       <GenreBadges genres={data?.genres} />
       <ThemedText stripped style={{ color: "#fff" }}>
         {data?.summary}

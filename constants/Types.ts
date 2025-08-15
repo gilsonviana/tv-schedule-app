@@ -104,4 +104,6 @@ export type TvShowPeopleDetail = TvShowPeople<{
 export type TvSearchResult = {
   score: number;
   show: TvShow;
+  people: TvShowPeople;
+  [key: string]: any;
 };

@@ -15,9 +15,6 @@ const enableRequest = (url: string, enabled = true): string | null => {
 
 export const useCustomSWR = <T>(url: string, opts?: UseCustomSWRParams) => {
   const [debouncedUrl] = useDebounce(url, opts?.wait ?? 100);
-  const obj = useSWR<T>(
-    enableRequest(debouncedUrl, opts?.enabled),
-    fetcher
-  );
+  const obj = useSWR<T>(enableRequest(opts?.wait ? debouncedUrl : url, opts?.enabled), fetcher);
   return obj;
 };

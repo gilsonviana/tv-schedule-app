@@ -1,15 +1,40 @@
 import { ThemedText } from "@/components/ThemedText";
-import { SectionList, View, StyleSheet, Text } from "react-native";
+import {
+  SectionList,
+  View,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/reducers";
 import { Link } from "expo-router";
-import { isEmpty, toString } from "lodash";
+import { isEmpty, map, toString } from "lodash";
 import { blurhash } from "@/constants/Misc";
+import { Picker } from "@react-native-picker/picker";
+import { useRef, useState } from "react";
+import { PillButton } from "@/components/PillButton";
+
+const SORT_OPTIONS = [
+  {
+    label: "Ascend",
+    value: "asc",
+  },
+  {
+    label: "Descend",
+    value: "desc",
+  },
+  {
+    label: "In Order",
+    value: "order",
+  },
+];
 
 export default function FavoriteScreen() {
+  const pickerRef = useRef<Picker<string>>(null);
+  const [sortOption, setSortOption] = useState<string>("order");
   const { favoriteShows, favoriteEpisodes } = useSelector(
     (state: RootState) => state.favorites
   );
@@ -18,103 +43,149 @@ export default function FavoriteScreen() {
   const sections = [];
 
   if (!isEmpty(favoriteShows)) {
+    let sortedShows = [...(favoriteShows ?? [])];
+    if (sortOption === "asc") {
+      sortedShows.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === "desc") {
+      sortedShows.sort((a, b) => b.name.localeCompare(a.name));
+    }
     sections.push({
       title: "Shows",
-      data: favoriteShows,
+      data: sortedShows,
     });
   }
 
   if (!isEmpty(favoriteEpisodes)) {
+    let sortedEpisodes = [...(favoriteEpisodes ?? [])];
+    if (sortOption === "asc") {
+      sortedEpisodes.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === "desc") {
+      sortedEpisodes.sort((a, b) => b.name.localeCompare(a.name));
+    }
     sections.push({
       title: "Episodes",
-      data: favoriteEpisodes,
+      data: sortedEpisodes,
     });
   }
 
   return (
-    <SectionList
-      sections={sections as any[]}
-      style={{
-        flex: 1,
-        backgroundColor: "#000",
-        paddingInline: 16,
-      }}
-      keyExtractor={(item) => toString(item.id)}
-      ListHeaderComponent={() => (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: insets.top + 34,
-          }}
-        >
-          <ThemedText
-            style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}
-          >
-            Your Favorites
-          </ThemedText>
-        </View>
-      )}
-      renderSectionHeader={({ section }) => (
-        <>
-          <ThemedText
+    <>
+      <Picker
+        ref={(ref) => {
+          pickerRef.current = ref;
+        }}
+        style={{
+          display: "none",
+          backgroundColor: "#aaa",
+          color: "#fff",
+        }}
+        itemStyle={{
+          color: "#fff",
+        }}
+        selectionColor="#fff"
+        mode="dialog"
+        selectedValue={sortOption}
+        onValueChange={(itemValue) => setSortOption(itemValue)}
+      >
+        {map(SORT_OPTIONS, (sortOpt) => (
+          <Picker.Item
+            key={sortOpt.label}
+            label={sortOpt.label}
+            value={sortOpt.value}
+          />
+        ))}
+      </Picker>
+      <SectionList
+        sections={sections as any[]}
+        style={{
+          flex: 1,
+          backgroundColor: "#000",
+          paddingInline: 16,
+        }}
+        keyExtractor={(item) => toString(item.id)}
+        ListHeaderComponent={() => (
+          <View style={{ marginTop: insets.top + 34 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ThemedText
+                style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}
+              >
+                Your Favorites
+              </ThemedText>
+            </View>
+            <View style={{ alignItems: "flex-start", marginTop: 16 }}>
+              <PillButton
+                onPress={() => pickerRef.current?.focus()}
+                text={`Sort: ${sortOption}`}
+              />
+            </View>
+          </View>
+        )}
+        renderSectionHeader={({ section }) => (
+          <>
+            <ThemedText
+              style={{
+                color: "#fff",
+                fontWeight: "700",
+                fontSize: 21,
+                paddingVertical: 16,
+              }}
+            >
+              {section.title}
+            </ThemedText>
+            <Animated.FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={section.data}
+              keyExtractor={(item) => toString(item.id)}
+              renderItem={({ item }) => (
+                <Link href={`/home/shows/${item.id}`}>
+                  <View
+                    style={{
+                      paddingInline: 16,
+                    }}
+                  >
+                    <Image
+                      style={styles.image}
+                      source={item.image.medium}
+                      placeholder={{ blurhash }}
+                      contentFit="cover"
+                    />
+                    <Text
+                      style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                </Link>
+              )}
+            />
+          </>
+        )}
+        renderItem={() => <></>}
+        ListEmptyComponent={() => (
+          <View
             style={{
-              color: "#fff",
-              fontWeight: "700",
-              fontSize: 21,
-              paddingVertical: 16,
+              marginTop: 24,
+              backgroundColor: "#222",
+              padding: 24,
+              borderRadius: 6,
             }}
           >
-            {section.title}
-          </ThemedText>
-          <Animated.FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={section.data}
-            keyExtractor={(item) => toString(item.id)}
-            renderItem={({ item }) => (
-              <Link href={`/home/shows/${item.id}`}>
-                <View
-                  style={{
-                    paddingInline: 16,
-                  }}
-                >
-                  <Image
-                    style={styles.image}
-                    source={item.image.medium}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                  />
-                  <Text
-                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                  >
-                    {item.name}
-                  </Text>
-                </View>
-              </Link>
-            )}
-          />
-        </>
-      )}
-      renderItem={() => <></>}
-      ListEmptyComponent={() => (
-        <View
-          style={{
-            marginTop: 24,
-            backgroundColor: "#222",
-            padding: 24,
-            borderRadius: 6,
-          }}
-        >
-          <Text style={{ color: "#ddd", fontSize: 18 }}>
-            Ops, it looks like you haven&apos;t add any favorite show or
-            episode.
-            {"\n\n"}
-            Once you add a favorite show or episode it&apos;ll appear here.
-          </Text>
-        </View>
-      )}
-    />
+            <Text style={{ color: "#ddd", fontSize: 18 }}>
+              Ops, it looks like you haven&apos;t add any favorite show or
+              episode.
+              {"\n\n"}
+              Once you add a favorite show or episode it&apos;ll appear here.
+            </Text>
+          </View>
+        )}
+      />
+    </>
   );
 }
 

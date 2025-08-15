@@ -1,4 +1,4 @@
-import { StyleSheet, SectionList, View } from "react-native";
+import { StyleSheet, SectionList, View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { getTvShows } from "@/constants/ApiRoutes";
@@ -54,7 +54,9 @@ export default function HomeScreen() {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: insets.top + 34,
+            marginTop: insets.top,
+            paddingTop: insets.top,
+            paddingBottom: insets.top / 2,
           }}
         >
           <ThemedText

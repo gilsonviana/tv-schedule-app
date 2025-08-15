@@ -5,4 +5,4 @@ export const getTvShowById = (resourceId: number | string) => `${tvMazeBaseAPI}/
 export const getTvEpisodesBySeasonId = (resourceId: number | string) => `${tvMazeBaseAPI}/seasons/${resourceId}/episodes`
 export const getTvEpisodeById = (resourceId: number | string) => `${tvMazeBaseAPI}/episodes/${resourceId}?embed=guestcast`
 export const getTvPeopleById = (resourceId: number | string) => `${tvMazeBaseAPI}/people/${resourceId}?embed[]=castcredits&embed[]=guestcastcredits`
-export const searchShowQuery = (queryString: string) => `${tvMazeBaseAPI}/search/shows?q=${queryString}`
+export const searchQueryUrl = (queryString: string, type: 'show' | 'person' | string) => `${tvMazeBaseAPI}/search/${type}?q=${queryString}`

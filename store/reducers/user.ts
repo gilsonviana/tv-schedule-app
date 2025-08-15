@@ -2,25 +2,25 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface UserState {
-  pin?: string;
+  requestBiometric?: boolean;
 }
 
 export const initialState: UserState = {
-  pin: undefined,
+  requestBiometric: true,
 };
 
 const { actions, reducer } = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUserPin: (state, action: PayloadAction<string>) => {
+    toggleRequestBiometric: (state) => {
       return {
         ...state,
-        pin: action.payload,
+        requestBiometric: !state.requestBiometric
       };
     },
   },
 });
-export const { setUserPin } = actions;
+export const { toggleRequestBiometric } = actions;
 
 export default reducer;

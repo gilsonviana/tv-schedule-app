@@ -13,11 +13,23 @@ import { RootState } from "@/store/reducers";
 import Feather from "@expo/vector-icons/Feather";
 import { addRecently } from "@/store/reducers/recently";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBiometrics } from "@/hooks/useBiometrics";
+import { useReduxHydrate } from "@/hooks/useReduxHydrate";
 
 export default function HomeScreen() {
+  const userPreferences = useSelector((state: RootState) => state.user);
   const { shows: recentlyShows } = useSelector(
     (state: RootState) => state.recently
   );
+  const { hasSuccessBiometric } = useBiometrics({
+    shouldPromptBiometric: userPreferences.requestBiometric,
+  });
+  const { rehydrated } = useReduxHydrate({ shouldHydrate: hasSuccessBiometric });
+  console.log({
+    requestBiometric: userPreferences.requestBiometric,
+    hasSuccessBiometric,
+    rehydrated,
+  });
   const dispatch = useDispatch();
   const { data } = useCustomSWR<TvShow[]>(getTvShows());
   const suffledData = shuffle(data);
@@ -54,7 +66,7 @@ export default function HomeScreen() {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: insets.top,
+            marginTop: insets.top * 2,
             paddingTop: insets.top,
             paddingBottom: insets.top / 2,
           }}

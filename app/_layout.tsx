@@ -8,30 +8,16 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Provider as ReduxProvider } from "react-redux";
 import "react-native-reanimated";
-
 import { useColorScheme } from "@/hooks/useColorScheme";
-import store, { getState, PERSIST_KEY } from "@/store";
-import { useEffect, useState } from "react";
+import store from "@/store";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const [rehydrated, setRehydrated] = useState(false);
 
-  useEffect(() => {
-    const hydrateStore = async () => {
-      const persistedState = await getState(PERSIST_KEY);
-      if (persistedState) {
-        store.dispatch({ type: "HYDRATE", payload: persistedState });
-      }
-      setRehydrated(true);
-    };
-    hydrateStore();
-  }, []);
-
-  if (!loaded || !rehydrated) {
+  if (!loaded) {
     return null;
   }
 

@@ -1,6 +1,5 @@
-import { StyleSheet, SectionList } from "react-native";
+import { StyleSheet, SectionList, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { getTvShows } from "@/constants/ApiRoutes";
 import { isEmpty, shuffle, slice, toString } from "lodash";
@@ -9,15 +8,18 @@ import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { Link } from "expo-router";
 import { blurhash } from "@/constants/Misc";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/reducers";
+import Feather from "@expo/vector-icons/Feather";
+import { addRecently } from "@/store/reducers/recently";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { favoriteShows, favoriteEpisodes } = useSelector(
-    (state: RootState) => state.favorites
+  const { shows: recentlyShows } = useSelector(
+    (state: RootState) => state.recently
   );
+  const dispatch = useDispatch();
   const { data } = useCustomSWR<TvShow[]>(getTvShows());
-
   const suffledData = shuffle(data);
 
   const sections = [
@@ -31,24 +33,47 @@ export default function HomeScreen() {
     },
   ];
 
-  if (!isEmpty(favoriteShows)) {
-    sections.push({
-      title: "Favorite Shows",
-      data: favoriteShows as TvShow[],
+  if (!isEmpty(recentlyShows)) {
+    sections.unshift({
+      title: "Recently Viewed",
+      data: recentlyShows as TvShow[],
     });
   }
-
-  if (!isEmpty(favoriteEpisodes)) {
-    sections.push({
-      title: "Favorite Episodes",
-      data: favoriteEpisodes as TvShow[],
-    });
-  }
+  const insets = useSafeAreaInsets();
 
   return (
     <SectionList
-      style={{ flex: 1, backgroundColor: "#000", paddingTop: 36 }}
-      keyExtractor={(item, index) => item.id?.toString?.() ?? index.toString()}
+      style={{
+        flex: 1,
+        backgroundColor: "#000",
+        paddingInline: 16,
+      }}
+      keyExtractor={(item) => toString(item.id)}
+      ListHeaderComponent={() => (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: insets.top + 34,
+          }}
+        >
+          <ThemedText
+            style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}
+          >
+            Welcome, Jobsity
+          </ThemedText>
+          <View style={{ flexDirection: "row", gap: 16 }}>
+            <Link href="/home/favorites">
+              <View>
+                <Feather name="list" size={28} color="#ddd" />
+              </View>
+            </Link>
+            <Link href="/home/search">
+              <Feather name="search" size={28} color="#ddd" />
+            </Link>
+          </View>
+        </View>
+      )}
       renderSectionHeader={({ section }) => (
         <>
           <ThemedText
@@ -63,16 +88,28 @@ export default function HomeScreen() {
           </ThemedText>
           <Animated.FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ backgroundColor: "#000" }}
             style={{ backgroundColor: "#000" }}
             data={section.data}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link href={`/home/shows/${item.id}`}>
-                <ThemedView
+              <Link
+                href={`/home/shows/${item.id}`}
+                onPress={() =>
+                  dispatch(
+                    addRecently({
+                      type: "shows",
+                      id: item.id,
+                      image: item.image,
+                      name: item.name,
+                    })
+                  )
+                }
+              >
+                <View
                   style={{
                     paddingInline: 16,
-                    backgroundColor: "#000",
                   }}
                 >
                   <Image
@@ -81,7 +118,7 @@ export default function HomeScreen() {
                     placeholder={{ blurhash }}
                     contentFit="cover"
                   />
-                </ThemedView>
+                </View>
               </Link>
             )}
           />
@@ -96,9 +133,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    height: 195,
-    width: 120,
-    backgroundColor: "#0553",
+    height: 250,
+    width: 250,
+    aspectRatio: 9 / 16,
     borderRadius: 4,
   },
 });

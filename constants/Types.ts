@@ -1,4 +1,4 @@
-interface TvImageObj {
+export interface TvImageObj {
   medium: string;
   original: string;
 }
@@ -100,3 +100,8 @@ export type TvShowPeopleDetail = TvShowPeople<{
   castcredits: { _links: TvLinkObjs }[];
   guestcastcredits: { _links: TvLinkObjs }[];
 }>;
+
+export type TvSearchResult = {
+  score: number;
+  show: TvShow;
+};

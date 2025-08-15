@@ -9,17 +9,39 @@ import {
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
-import { last, map, size, slice, split, toString } from "lodash";
+import {
+  filter,
+  isEmpty,
+  last,
+  map,
+  size,
+  slice,
+  split,
+  toNumber,
+  toString,
+} from "lodash";
 import { ThemedText } from "@/components/ThemedText";
 import Animated from "react-native-reanimated";
 import Skeleton from "@/components/Skeleton";
 import { useBatchFetch } from "@/hooks/useBatchFetch";
 import { blurhash } from "@/constants/Misc";
+import { RootState } from "@/store/reducers";
+import { useDispatch, useSelector } from "react-redux";
+import { addRecently } from "@/store/reducers/recently";
 
 export default function PeopleDetailScreen() {
+  const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
   const { data } = useCustomSWR<TvShowPeopleDetail>(
     getTvPeopleById(toString(id))
+  );
+  const { people: recentlyPeople } = useSelector(
+    (state: RootState) => state.recently
+  );
+
+  const filteredRecentlyPeople = filter(
+    recentlyPeople,
+    (people) => people.id !== toNumber(id)
   );
 
   const guestCastLinks = map(
@@ -73,7 +95,7 @@ export default function PeopleDetailScreen() {
           })}
         </ThemedText>
       )}
-      {isLoadingShows && (
+      {isLoadingShows && isEmpty(shows) && (
         <>
           <Skeleton width={120} height={24} />
           <View style={{ flexDirection: "row" }}>
@@ -101,7 +123,20 @@ export default function PeopleDetailScreen() {
             data={shows}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link href={`../shows/${item.id}`} style={{ marginRight: 16 }}>
+              <Link
+                href={`../shows/${item.id}`}
+                style={{ marginRight: 16 }}
+                onPress={() =>
+                  dispatch(
+                    addRecently({
+                      type: "shows",
+                      id: item.id,
+                      image: item.image,
+                      name: item.name,
+                    })
+                  )
+                }
+              >
                 <View>
                   <Image
                     source={item?.image?.original ?? item?.image?.medium}
@@ -121,7 +156,7 @@ export default function PeopleDetailScreen() {
           />
         </>
       )}
-      {isLoadingEpisodes && (
+      {isLoadingEpisodes && isEmpty(episodes) && (
         <>
           <Skeleton width={120} height={24} />
           <View style={{ flexDirection: "row" }}>
@@ -150,7 +185,19 @@ export default function PeopleDetailScreen() {
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
               <View style={{ marginRight: 16 }}>
-                <Link href={`../episodes/${item.id}`}>
+                <Link
+                  href={`../episodes/${item.id}`}
+                  onPress={() =>
+                    dispatch(
+                      addRecently({
+                        type: "episodes",
+                        id: item.id,
+                        image: item.image,
+                        name: item.name,
+                      })
+                    )
+                  }
+                >
                   <View>
                     <Image
                       source={item?.image?.original ?? item?.image?.medium}
@@ -173,6 +220,46 @@ export default function PeopleDetailScreen() {
                   <ThemedText style={{ color: "#ddd", marginTop: 8 }}>
                     {item._links.show.name}
                   </ThemedText>
+                </Link>
+              </View>
+            )}
+          />
+        </>
+      )}
+      {!isEmpty(filteredRecentlyPeople) && (
+        <>
+          <ThemedText
+            style={{
+              fontWeight: "700",
+              fontSize: 21,
+              marginTop: 24,
+              marginBottom: 8,
+              color: "#fff",
+            }}
+          >
+            Recently Viewed
+          </ThemedText>
+          <Animated.FlatList
+            horizontal
+            data={filteredRecentlyPeople}
+            keyExtractor={(item) => toString(item.id)}
+            renderItem={({ item }) => (
+              <View style={{ marginRight: 16 }}>
+                <Link href={`../people/${item.id}`}>
+                  <View>
+                    <Image
+                      source={item?.image?.original ?? item?.image?.medium}
+                      style={styles.image}
+                      placeholder={{ blurhash }}
+                      contentFit="cover"
+                      contentPosition="top center"
+                    />
+                    <ThemedText
+                      style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                    >
+                      {item.name}
+                    </ThemedText>
+                  </View>
                 </Link>
               </View>
             )}

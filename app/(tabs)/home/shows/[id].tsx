@@ -1,7 +1,6 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { getTvEpisodesBySeasonId, getTvShowById } from "@/constants/ApiRoutes";
 import { TvShowDetail, TvShowEpisode } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
@@ -18,8 +17,11 @@ import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import { blurhash } from "@/constants/Misc";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { useDispatch } from "react-redux";
+import { addRecently } from "@/store/reducers/recently";
 
 export default function ShowsDetailScreen() {
+  const dispatch = useDispatch();
   const [selectedSeason, setSelectedSeason] = useState<number>();
   const { id } = useLocalSearchParams();
   const { data } = useCustomSWR<TvShowDetail>(getTvShowById(toString(id)));
@@ -58,12 +60,23 @@ export default function ShowsDetailScreen() {
       }}
       style={{ backgroundColor: "#000" }}
     >
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <ThemedText style={{ color: "#fff", fontWeight: "700", fontSize: 32 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#fff", fontWeight: "700", fontSize: 32 }}>
           {data?.name}
-        </ThemedText>
+        </Text>
         {data?.image && (
-          <FavoriteButton type="shows" id={toNumber(id)} image={data.image} />
+          <FavoriteButton
+            type="shows"
+            id={toNumber(id)}
+            image={data.image}
+            name={data.name}
+          />
         )}
       </View>
       <GenreBadges genres={data?.genres} />
@@ -72,7 +85,7 @@ export default function ShowsDetailScreen() {
       </ThemedText>
       {size(data?._embedded?.cast) > 0 && (
         <>
-          <ThemedText
+          <Text
             style={{
               fontWeight: "700",
               fontSize: 21,
@@ -82,7 +95,7 @@ export default function ShowsDetailScreen() {
             }}
           >
             Cast
-          </ThemedText>
+          </Text>
           <Animated.FlatList
             horizontal
             data={data?._embedded?.cast}
@@ -91,26 +104,41 @@ export default function ShowsDetailScreen() {
               <Link
                 style={{ marginRight: 16 }}
                 href={`/home/people/${item.person.id}`}
+                onPress={() =>
+                  dispatch(
+                    addRecently({
+                      type: "people",
+                      id: item.person.id,
+                      image: item.person.image,
+                      name: item.person.name,
+                    })
+                  )
+                }
               >
-                <ThemedView style={{ backgroundColor: "#000" }}>
+                <View>
                   <Image
                     source={
                       item.person.image?.original || item.person.image?.medium
                     }
-                    style={styles.image}
+                    style={styles.castImage}
                     placeholder={{ blurhash }}
                     contentFit="cover"
                     contentPosition="top center"
                   />
-                  <ThemedText
-                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontWeight: "700",
+                      marginTop: 8,
+                      fontSize: 16,
+                    }}
                   >
                     {item.person.name}
-                  </ThemedText>
-                  <ThemedText style={{ color: "#ddd" }}>
+                  </Text>
+                  <Text style={{ color: "#ddd", fontSize: 16 }}>
                     {item.character.name}
-                  </ThemedText>
-                </ThemedView>
+                  </Text>
+                </View>
               </Link>
             )}
           />
@@ -118,7 +146,7 @@ export default function ShowsDetailScreen() {
       )}
       {size(data?.schedule.days) > 0 && (
         <>
-          <ThemedText
+          <Text
             style={{
               fontWeight: "700",
               fontSize: 21,
@@ -128,67 +156,72 @@ export default function ShowsDetailScreen() {
             }}
           >
             Schedule
-          </ThemedText>
+          </Text>
           {data?.network?.name && (
-            <ThemedView style={{ backgroundColor: "#000" }}>
-              <ThemedText
-                style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-              >
-                Aired by{" "}
-              </ThemedText>
-              <ThemedView
+            <>
+              <View
                 style={{
-                  marginRight: 16,
-                  backgroundColor: "#000",
                   flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                <ThemedText
+                <Text
                   style={{
                     color: "#fff",
                     fontWeight: "700",
                     marginTop: 8,
-                    marginRight: 8,
+                    fontSize: 16,
                   }}
                 >
-                  {data?.network.name}
-                </ThemedText>
-                {hasFlag(toString(data?.network.country.code)) && (
-                  <ThemedText style={{ marginTop: 8 }}>
-                    {getUnicodeFlagIcon(toString(data?.network.country.code))}
-                  </ThemedText>
-                )}
-              </ThemedView>
+                  Aired by{" "}
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {data?.network.name}{" "}
+                    {hasFlag(toString(data?.network.country.code)) &&
+                      getUnicodeFlagIcon(data?.network.country.code)}
+                  </Text>
+                </Text>
+              </View>
               {data?.network.officialSite && (
                 <TouchableOpacity
                   onPress={() => openBrowserAsync(data.network.officialSite)}
                 >
-                  <ThemedText
-                    style={{ color: "blue", fontWeight: "700", marginTop: 8 }}
+                  <Text
+                    style={{
+                      color: "blue",
+                      fontWeight: "700",
+                      marginTop: 8,
+                      fontSize: 16,
+                    }}
                   >
                     Official Website
-                  </ThemedText>
+                  </Text>
                 </TouchableOpacity>
               )}
-            </ThemedView>
+            </>
           )}
           <Animated.FlatList
             horizontal
             data={data?.schedule.days}
-            keyExtractor={(item, index) => item + index}
+            keyExtractor={(item) => item}
             renderItem={({ item }) => (
-              <ThemedView style={{ marginRight: 16, backgroundColor: "#000" }}>
-                <ThemedText
-                  style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+              <View style={{ marginRight: 16, alignItems: "flex-start" }}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontWeight: "700",
+                    marginVertical: 8,
+                    fontSize: 16,
+                  }}
                 >
                   {item}
-                </ThemedText>
-                <ThemedText
-                  style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                >
-                  <Badge outlined text={toString(data?.schedule.time)} />
-                </ThemedText>
-              </ThemedView>
+                </Text>
+                <Badge outlined text={toString(data?.schedule.time)} />
+              </View>
             )}
           />
         </>
@@ -198,6 +231,7 @@ export default function ShowsDetailScreen() {
           style={{
             backgroundColor: "#aaa",
             color: "#000",
+            marginTop: 24,
           }}
           mode="dropdown"
           selectedValue={selectedSeason}
@@ -216,11 +250,23 @@ export default function ShowsDetailScreen() {
         keyExtractor={(item) => toString(item.id)}
         data={seasonEpisodesData}
         renderItem={({ item }) => (
-          <Link href={`/home/episodes/${item.id}`} style={{ marginBottom: 24 }}>
-            <ThemedView style={{ backgroundColor: "#000" }}>
-              <ThemedView
+          <Link
+            href={`/home/episodes/${item.id}`}
+            style={{ marginBottom: 24 }}
+            onPress={() =>
+              dispatch(
+                addRecently({
+                  type: "episodes",
+                  id: item.id,
+                  image: item.image,
+                  name: item.name,
+                })
+              )
+            }
+          >
+            <View>
+              <View
                 style={{
-                  backgroundColor: "#000",
                   flexDirection: "row",
                   alignItems: "center",
                 }}
@@ -232,9 +278,7 @@ export default function ShowsDetailScreen() {
                   contentPosition="top center"
                   source={item.image?.original ?? item.image?.medium}
                 />
-                <ThemedView
-                  style={{ flex: 2, backgroundColor: "#000", marginLeft: 8 }}
-                >
+                <View style={{ flex: 2, marginLeft: 8 }}>
                   <ThemedText style={{ color: "#fff", fontSize: 14 }}>
                     {item.number}. {item.name}
                   </ThemedText>
@@ -243,15 +287,15 @@ export default function ShowsDetailScreen() {
                   >
                     Rating: {item.rating.average}
                   </ThemedText>
-                </ThemedView>
-              </ThemedView>
+                </View>
+              </View>
               <ThemedText
                 stripped
                 style={{ color: "#fff", marginTop: 8, fontSize: 14 }}
               >
                 {item.summary}
               </ThemedText>
-            </ThemedView>
+            </View>
           </Link>
         )}
       />
@@ -262,9 +306,15 @@ export default function ShowsDetailScreen() {
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    height: 295,
-    minWidth: 200,
+    height: "auto",
     width: "100%",
+  },
+  castImage: {
+    flex: 1,
+    height: 250,
+    width: 250,
+    aspectRatio: 9 / 16,
+    borderRadius: 4,
   },
   episodeImage: {
     flex: 1,

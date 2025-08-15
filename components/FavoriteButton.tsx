@@ -1,6 +1,6 @@
-import { TvShowDetail } from "@/constants/Types";
 import { RootState } from "@/store/reducers";
 import {
+  FavoriteObj,
   toggleFavoriteEpisode,
   toggleFavoriteShow,
 } from "@/store/reducers/favorites";
@@ -9,19 +9,14 @@ import { findIndex } from "lodash";
 import { TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-interface FavoriteButtonProps {
+interface FavoriteButtonProps extends FavoriteObj {
   type: "shows" | "episodes";
 }
 
-export const FavoriteButton = ({
-  id,
-  image,
-  type,
-}: FavoriteButtonProps & Pick<TvShowDetail, "id" | "image">) => {
+export const FavoriteButton = ({ id, image, name, type }: FavoriteButtonProps) => {
   const { favoriteShows, favoriteEpisodes } = useSelector(
     (state: RootState) => state.favorites
   );
-  console.log({ favoriteShows, favoriteEpisodes });
   const dispatch = useDispatch();
   const isFavorite =
     findIndex(type === "shows" ? favoriteShows : favoriteEpisodes, { id }) >= 0;
@@ -29,8 +24,8 @@ export const FavoriteButton = ({
   const handler = () => {
     dispatch(
       type === "shows"
-        ? toggleFavoriteShow({ id, image })
-        : toggleFavoriteEpisode({ id, image })
+        ? toggleFavoriteShow({ id, image, name })
+        : toggleFavoriteEpisode({ id, image, name })
     );
   };
 

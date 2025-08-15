@@ -1,11 +1,17 @@
-import { TvShowDetail } from "@/constants/Types";
+import { TvImageObj } from "@/constants/Types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { xorBy } from "lodash";
 
+export type FavoriteObj = {
+  id: number;
+  image: TvImageObj;
+  name: string;
+};
+
 export interface FavoriteState {
-  favoriteShows?: Pick<TvShowDetail, "id" | "image">[];
-  favoriteEpisodes?: Pick<TvShowDetail, "id" | "image">[];
+  favoriteShows?: FavoriteObj[];
+  favoriteEpisodes?: FavoriteObj[];
 }
 
 export const initialState: FavoriteState = {
@@ -19,7 +25,7 @@ const { actions, reducer } = createSlice({
   reducers: {
     toggleFavoriteShow: (
       state,
-      action: PayloadAction<Pick<TvShowDetail, "id" | "image">>
+      action: PayloadAction<FavoriteObj>
     ) => {
       return {
         ...state,
@@ -32,7 +38,7 @@ const { actions, reducer } = createSlice({
     },
     toggleFavoriteEpisode: (
       state,
-      action: PayloadAction<Pick<TvShowDetail, "id" | "image">>
+      action: PayloadAction<FavoriteObj>
     ) => {
       return {
         ...state,

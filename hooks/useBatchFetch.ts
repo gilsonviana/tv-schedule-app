@@ -10,10 +10,7 @@ export const useBatchFetch = <T>(urls: string[]) => {
     const fetchAll = async () => {
       setIsLoading(true);
       const res = await Promise.allSettled<T>(
-        urls.map(async (url) => {
-          const { data } = await axios.get(url);
-          return data;
-        })
+        urls.map((url) => axios.get(url).then((res) => res.data))
       );
       data.current = res
         .filter((r: PromiseSettledResult<T>) => r.status === "fulfilled")

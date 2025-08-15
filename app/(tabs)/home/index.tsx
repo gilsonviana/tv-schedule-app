@@ -1,13 +1,11 @@
-import { StyleSheet, SectionList, View, TouchableOpacity } from "react-native";
+import { SectionList, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { getTvShows } from "@/constants/ApiRoutes";
 import { isEmpty, shuffle, slice, toString } from "lodash";
 import { TvShow } from "@/constants/Types";
-import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { Link } from "expo-router";
-import { blurhash } from "@/constants/Misc";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/reducers";
 import Feather from "@expo/vector-icons/Feather";
@@ -15,6 +13,7 @@ import { addRecently } from "@/store/reducers/recently";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBiometrics } from "@/hooks/useBiometrics";
 import { useReduxHydrate } from "@/hooks/useReduxHydrate";
+import { ListItem } from "@/components/ListItem";
 
 export default function HomeScreen() {
   const userPreferences = useSelector((state: RootState) => state.user);
@@ -24,7 +23,9 @@ export default function HomeScreen() {
   const { hasSuccessBiometric } = useBiometrics({
     shouldPromptBiometric: userPreferences.requestBiometric,
   });
-  const { rehydrated } = useReduxHydrate({ shouldHydrate: hasSuccessBiometric });
+  const { rehydrated } = useReduxHydrate({
+    shouldHydrate: hasSuccessBiometric,
+  });
   console.log({
     requestBiometric: userPreferences.requestBiometric,
     hasSuccessBiometric,
@@ -108,8 +109,12 @@ export default function HomeScreen() {
             data={section.data}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link
+              <ListItem
                 href={`/home/shows/${item.id}`}
+                item={item}
+                style={{
+                  paddingInline: 16,
+                }}
                 onPress={() =>
                   dispatch(
                     addRecently({
@@ -120,19 +125,7 @@ export default function HomeScreen() {
                     })
                   )
                 }
-                style={{
-                  paddingInline: 16,
-                }}
-              >
-                <View>
-                  <Image
-                    style={styles.image}
-                    source={item.image.medium}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                  />
-                </View>
-              </Link>
+              />
             )}
           />
         </>
@@ -142,13 +135,3 @@ export default function HomeScreen() {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    height: 250,
-    width: 250,
-    aspectRatio: 9 / 16,
-    borderRadius: 4,
-  },
-});

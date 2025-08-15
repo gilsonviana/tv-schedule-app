@@ -19,6 +19,7 @@ import { blurhash } from "@/constants/Misc";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
+import { ListItem } from "@/components/ListItem";
 
 export default function ShowsDetailScreen() {
   const dispatch = useDispatch();
@@ -101,7 +102,9 @@ export default function ShowsDetailScreen() {
             data={data?._embedded?.cast}
             keyExtractor={(item) => toString(item.character.id)}
             renderItem={({ item }) => (
-              <Link
+              <ListItem
+                item={item}
+                variant="people"
                 style={{ marginRight: 16 }}
                 href={`/home/people/${item.person.id}`}
                 onPress={() =>
@@ -114,32 +117,7 @@ export default function ShowsDetailScreen() {
                     })
                   )
                 }
-              >
-                <View>
-                  <Image
-                    source={
-                      item.person.image?.original || item.person.image?.medium
-                    }
-                    style={styles.castImage}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                    contentPosition="top center"
-                  />
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontWeight: "700",
-                      marginTop: 8,
-                      fontSize: 16,
-                    }}
-                  >
-                    {item.person.name}
-                  </Text>
-                  <Text style={{ color: "#ddd", fontSize: 16 }}>
-                    {item.character.name}
-                  </Text>
-                </View>
-              </Link>
+              />
             )}
           />
         </>

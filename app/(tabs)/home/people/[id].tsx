@@ -28,6 +28,7 @@ import { blurhash } from "@/constants/Misc";
 import { RootState } from "@/store/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
+import { ListItem } from "@/components/ListItem";
 
 export default function PeopleDetailScreen() {
   const dispatch = useDispatch();
@@ -123,7 +124,9 @@ export default function PeopleDetailScreen() {
             data={shows}
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
-              <Link
+              <ListItem
+                variant="cast"
+                item={item}
                 href={`../shows/${item.id}`}
                 style={{ marginRight: 16 }}
                 onPress={() =>
@@ -136,22 +139,36 @@ export default function PeopleDetailScreen() {
                     })
                   )
                 }
-              >
-                <View>
-                  <Image
-                    source={item?.image?.original ?? item?.image?.medium}
-                    style={styles.image}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                    contentPosition="top center"
-                  />
-                  <ThemedText
-                    style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                  >
-                    {item.name}
-                  </ThemedText>
-                </View>
-              </Link>
+              />
+              // <Link
+              //   href={`../shows/${item.id}`}
+              //   style={{ marginRight: 16 }}
+              //   onPress={() =>
+              //     dispatch(
+              //       addRecently({
+              //         type: "shows",
+              //         id: item.id,
+              //         image: item.image,
+              //         name: item.name,
+              //       })
+              //     )
+              //   }
+              // >
+              //   <View>
+              //     <Image
+              //       source={item?.image?.original ?? item?.image?.medium}
+              //       style={styles.image}
+              //       placeholder={{ blurhash }}
+              //       contentFit="cover"
+              //       contentPosition="top center"
+              //     />
+              //     <ThemedText
+              //       style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
+              //     >
+              //       {item.name}
+              //     </ThemedText>
+              //   </View>
+              // </Link>
             )}
           />
         </>
@@ -185,7 +202,9 @@ export default function PeopleDetailScreen() {
             keyExtractor={(item) => toString(item.id)}
             renderItem={({ item }) => (
               <View style={{ marginRight: 16 }}>
-                <Link
+                <ListItem
+                  variant="guest"
+                  item={item}
                   href={`../episodes/${item.id}`}
                   onPress={() =>
                     dispatch(
@@ -197,22 +216,7 @@ export default function PeopleDetailScreen() {
                       })
                     )
                   }
-                >
-                  <View>
-                    <Image
-                      source={item?.image?.original ?? item?.image?.medium}
-                      style={styles.image}
-                      placeholder={{ blurhash }}
-                      contentFit="cover"
-                      contentPosition="top center"
-                    />
-                    <ThemedText
-                      style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                    >
-                      {item.name}
-                    </ThemedText>
-                  </View>
-                </Link>
+                />
                 <Link
                   href={`../shows/${last(split(item._links.show.href, "/"))}`}
                   style={{ marginRight: 16 }}

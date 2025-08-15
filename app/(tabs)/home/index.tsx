@@ -108,12 +108,11 @@ export default function HomeScreen() {
                     })
                   )
                 }
+                style={{
+                  paddingInline: 16,
+                }}
               >
-                <View
-                  style={{
-                    paddingInline: 16,
-                  }}
-                >
+                <View>
                   <Image
                     style={styles.image}
                     source={item.image.medium}

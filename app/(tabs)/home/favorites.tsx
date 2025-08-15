@@ -1,10 +1,5 @@
 import { ThemedText } from "@/components/ThemedText";
-import {
-  SectionList,
-  View,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { SectionList, View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,6 +11,7 @@ import { blurhash } from "@/constants/Misc";
 import { Picker } from "@react-native-picker/picker";
 import { useRef, useState } from "react";
 import { PillButton } from "@/components/PillButton";
+import { MessageBox } from "@/components/MessageBox";
 
 const SORT_OPTIONS = [
   {
@@ -168,21 +164,13 @@ export default function FavoriteScreen() {
         )}
         renderItem={() => <></>}
         ListEmptyComponent={() => (
-          <View
-            style={{
-              marginTop: 24,
-              backgroundColor: "#222",
-              padding: 24,
-              borderRadius: 6,
-            }}
-          >
-            <Text style={{ color: "#ddd", fontSize: 18 }}>
-              Ops, it looks like you haven&apos;t add any favorite show or
+          <MessageBox
+            style={{ marginTop: 24 }}
+            text={`Ops, it looks like you haven&apos;t add any favorite show or
               episode.
               {"\n\n"}
-              Once you add a favorite show or episode it&apos;ll appear here.
-            </Text>
-          </View>
+              Once you add a favorite show or episode it&apos;ll appear here.`}
+          />
         )}
       />
     </>

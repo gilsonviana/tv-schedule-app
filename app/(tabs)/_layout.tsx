@@ -36,6 +36,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="explore"
+        options={{
+          title: "Explore",
+          tabBarIcon: ({ color }) => (
+            <Feather name="chrome" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="preferences/index"
         options={{
           title: "Preferences",

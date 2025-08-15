@@ -166,10 +166,7 @@ export default function FavoriteScreen() {
         ListEmptyComponent={() => (
           <MessageBox
             style={{ marginTop: 24 }}
-            text={`Ops, it looks like you haven&apos;t add any favorite show or
-              episode.
-              {"\n\n"}
-              Once you add a favorite show or episode it&apos;ll appear here.`}
+            text="Ops, it looks like you haven't add any favorite show or episode yet."
           />
         )}
       />

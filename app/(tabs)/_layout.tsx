@@ -2,7 +2,6 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 import { HapticTab } from "@/components/ui/HapticTab";
-import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Feather from "@expo/vector-icons/Feather";
@@ -16,13 +15,18 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarStyle: [
+          { backgroundColor: "#000", elevation: -1 },
+          Platform.select({
+            ios: {
+              position: "absolute",
+            },
+            android: {
+              elevation: -1,
+            },
+            default: {},
+          }),
+        ],
       }}
     >
       <Tabs.Screen

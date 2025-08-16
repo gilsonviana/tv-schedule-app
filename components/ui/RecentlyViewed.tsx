@@ -24,7 +24,7 @@ export const RecentlyViewed = ({
     (item) => item.id !== toNumber(currentId)
   );
 
-  if (isEmpty(recentlyData)) {
+  if (isEmpty(filteredData)) {
     return null;
   }
 

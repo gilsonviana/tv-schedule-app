@@ -4,9 +4,9 @@ import Animated, {
   interpolate,
   useAnimatedRef,
   useAnimatedStyle,
-  useScrollViewOffset,
+  useSharedValue,
+  useAnimatedScrollHandler,
 } from "react-native-reanimated";
-import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 const HEADER_HEIGHT = 450;
@@ -17,16 +17,23 @@ type Props = PropsWithChildren<{
   style?: ViewStyle;
 }>;
 
-export default function ParallaxScrollView({
+export const ParallaxFlatList = ({
   children,
   headerImage,
   headerBackgroundColor,
-  style
-}: Props) {
+  style,
+}: Props) => {
   const colorScheme = useColorScheme() ?? "light";
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollViewOffset(scrollRef);
-  const bottom = useBottomTabOverflow();
+  const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
+
+  // ✅ Track scroll position manually
+  const scrollOffset = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollOffset.value = event.contentOffset.y;
+    },
+  });
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -50,28 +57,35 @@ export default function ParallaxScrollView({
 
   return (
     <View style={styles.container}>
-      <Animated.ScrollView
+      <Animated.FlatList
         ref={scrollRef}
+        data={[]} // no items, only header
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={null}
         scrollEventThrottle={16}
-        scrollIndicatorInsets={{ bottom }}
-        contentContainerStyle={{ paddingBottom: bottom }}
-      >
-        {headerImage && (
-          <Animated.View
-            style={[
-              styles.header,
-              { backgroundColor: headerBackgroundColor[colorScheme] },
-              headerAnimatedStyle,
-            ]}
-          >
-            {headerImage}
-          </Animated.View>
-        )}
-        <Animated.View style={[styles.content, style]}>{children}</Animated.View>
-      </Animated.ScrollView>
+        onScroll={onScroll} // ✅ hook up scroll handler
+        ListHeaderComponent={
+          <>
+            {headerImage && (
+              <Animated.View
+                style={[
+                  styles.header,
+                  { backgroundColor: headerBackgroundColor[colorScheme] },
+                  headerAnimatedStyle,
+                ]}
+              >
+                {headerImage}
+              </Animated.View>
+            )}
+            <Animated.View style={[styles.content, style]}>
+              {children}
+            </Animated.View>
+          </>
+        }
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +100,5 @@ const styles = StyleSheet.create({
     padding: 32,
     gap: 16,
     overflow: "hidden",
-    // backgroundColor: 'red'
   },
 });

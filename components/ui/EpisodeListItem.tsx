@@ -4,8 +4,8 @@ import { Link } from "expo-router";
 import { View, StyleSheet, Text } from "react-native";
 import { useDispatch } from "react-redux";
 import { Image } from "expo-image";
-import { StrippedText } from "./StrippedText";
 import { blurhash } from "@/constants/Misc";
+import { CollapsibleText } from "./CollapsibleText";
 
 type EpisodeListItemProps = TvShowEpisode;
 
@@ -57,9 +57,10 @@ export const EpisodeListItem = ({
             </Text>
           </View>
         </View>
-        <StrippedText style={{ color: "#fff", marginTop: 8, fontSize: 14 }}>
-          {summary}
-        </StrippedText>
+        <CollapsibleText
+          textStyle={{ color: "#fff", marginTop: 8, fontSize: 14 }}
+          text={summary}
+        />
       </View>
     </Link>
   );

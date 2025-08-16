@@ -3,28 +3,20 @@ import { TvSearchResult } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import {
   View,
-  Text,
-  StyleSheet,
   TextInput,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import Animated from "react-native-reanimated";
-import { Image } from "expo-image";
-import { blurhash } from "@/constants/Misc";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { GenreBadges } from "@/components/ui/GenreBadges";
 import Feather from "@expo/vector-icons/Feather";
-import { CollapsibleText } from "@/components/ui/CollapsibleText";
-import { Link } from "expo-router";
-import { useDispatch } from "react-redux";
-import { addRecently } from "@/store/reducers/recently";
 import { useMemo, useRef, useState } from "react";
 import Skeleton from "@/components/ui/Skeleton";
 import { PillButton } from "@/components/ui/PillButton";
 import { Picker } from "@react-native-picker/picker";
 import { map } from "lodash";
 import { MessageBox } from "@/components/ui/MessageBox";
+import { SearchListItem } from "@/components/ui/SearchListItem";
 
 const FILTER_OPTIONS = [
   {
@@ -50,8 +42,6 @@ export default function SearchScreen() {
       enabled: !!searchQuery,
     }
   );
-  const dispatch = useDispatch();
-  const key = isShows ? "show" : "person";
 
   const ListHeader = useMemo(
     () => (
@@ -175,81 +165,10 @@ export default function SearchScreen() {
           ListHeaderComponent={ListHeader}
           ListEmptyComponent={<RenderEmptyList />}
           renderItem={({ item }) => (
-            <Link
-              style={{ marginBottom: 16 }}
-              href={`/home/shows/${item?.[key]?.id}`}
-              onPress={() =>
-                isShows &&
-                dispatch(
-                  addRecently({
-                    type: "shows",
-                    id: item?.show?.id,
-                    image: item?.show?.image,
-                    name: item?.show?.name,
-                  })
-                )
-              }
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 16,
-                }}
-              >
-                {isShows && (
-                  <Image
-                    style={styles.episodeImage}
-                    placeholder={{ blurhash }}
-                    contentFit="cover"
-                    contentPosition="top center"
-                    source={
-                      item?.show?.image?.original ?? item?.show?.image?.medium
-                    }
-                  />
-                )}
-                <View style={{ flex: 3 }}>
-                  <Text
-                    style={{
-                      color: "#fff",
-                      marginVertical: 8,
-                      fontSize: 16,
-                      fontWeight: "700",
-                    }}
-                  >
-                    {item?.[key]?.name}
-                  </Text>
-                  {item?.show?.genres && (
-                    <GenreBadges genres={item?.show.genres} />
-                  )}
-                  {item?.show?.summary && (
-                    <CollapsibleText
-                      containerStyle={{
-                        marginTop: 8,
-                        backgroundColor: "#000",
-                      }}
-                      textStyle={{
-                        color: "#fff",
-                        fontSize: 14,
-                      }}
-                      text={item.show.summary}
-                    />
-                  )}
-                </View>
-              </View>
-            </Link>
+            <SearchListItem isShows={isShows} {...item} />
           )}
         />
       </KeyboardAvoidingView>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  episodeImage: {
-    flex: 1,
-    height: 195,
-    width: "100%",
-    aspectRatio: 3 / 4,
-    borderRadius: 6,
-  },
-});

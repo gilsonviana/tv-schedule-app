@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ParallaxFlatList } from "@/components/ui/ParallaxFlatList";
 import { getTvPeopleById } from "@/constants/ApiRoutes";
 import {
   TvEpisodeDetail,
@@ -43,7 +43,7 @@ export default function PeopleDetailScreen() {
     useBatchFetch<TvShowDetail>(slice(castCreditLinks, 0, 5));
 
   return (
-    <ParallaxScrollView
+    <ParallaxFlatList
       headerImage={
         <Image
           source={data?.image.original ?? data?.image.medium}
@@ -160,7 +160,7 @@ export default function PeopleDetailScreen() {
         variant="people"
         currentId={id as string}
       />
-    </ParallaxScrollView>
+    </ParallaxFlatList>
   );
 }
 

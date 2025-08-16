@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ParallaxFlatList } from "@/components/ui/ParallaxFlatList";
 import { getTvEpisodeById } from "@/constants/ApiRoutes";
 import { TvEpisodeDetail } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
@@ -25,7 +25,7 @@ export default function ShowsEpisodeDetailScreen() {
   );
 
   return (
-    <ParallaxScrollView
+    <ParallaxFlatList
       headerImage={
         <Image
           source={data?.image?.original ?? data?.image?.medium}
@@ -61,9 +61,7 @@ export default function ShowsEpisodeDetailScreen() {
           })}
         </Text>
       )}
-      <StrippedText style={{ color: "#fff" }}>
-        {data?.summary}
-      </StrippedText>
+      <StrippedText style={{ color: "#fff" }}>{data?.summary}</StrippedText>
       {!isEmpty(data?._embedded?.guestcast) && (
         <>
           <SectionTitle text="Guest Cast" />
@@ -97,7 +95,7 @@ export default function ShowsEpisodeDetailScreen() {
         variant="episodes"
         currentId={id as string}
       />
-    </ParallaxScrollView>
+    </ParallaxFlatList>
   );
 }
 

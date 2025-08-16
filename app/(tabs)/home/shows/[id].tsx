@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ParallaxFlatList } from "@/components/ui/ParallaxFlatList";
 import { StrippedText } from "@/components/ui/StrippedText";
 import { getTvEpisodesBySeasonId, getTvShowById } from "@/constants/ApiRoutes";
 import { TvShowDetail, TvShowEpisode } from "@/constants/Types";
@@ -46,7 +46,7 @@ export default function ShowsDetailScreen() {
   }, [data]);
 
   return (
-    <ParallaxScrollView
+    <ParallaxFlatList
       headerImage={
         <Image
           source={data?.image?.original ?? data?.image?.medium}
@@ -215,7 +215,7 @@ export default function ShowsDetailScreen() {
         data={seasonEpisodesData}
         renderItem={({ item }) => <EpisodeListItem {...item} />}
       />
-    </ParallaxScrollView>
+    </ParallaxFlatList>
   );
 }
 

@@ -11,6 +11,11 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import store from "@/store";
 import { BiometricsProvider } from "@/components/provider/Biometrics";
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from "react-native-safe-area-context";
+import { ToastsProvider } from "@/components/provider/Toasts";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,18 +28,22 @@ export default function RootLayout() {
   }
 
   return (
-    <BiometricsProvider>
-      <ReduxProvider store={store}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </ReduxProvider>
-    </BiometricsProvider>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <ToastsProvider>
+        <BiometricsProvider>
+          <ReduxProvider store={store}>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ThemeProvider>
+          </ReduxProvider>
+        </BiometricsProvider>
+      </ToastsProvider>
+    </SafeAreaProvider>
   );
 }

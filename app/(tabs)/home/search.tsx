@@ -1,7 +1,14 @@
 import { searchQueryUrl } from "@/constants/ApiRoutes";
 import { TvSearchResult } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
-import { View, Text, StyleSheet, TextInput, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import Animated from "react-native-reanimated";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/Misc";
@@ -109,9 +116,12 @@ export default function SearchScreen() {
           />
         ))}
       </Picker>
-      <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
         <Animated.FlatList
-          style={{ backgroundColor: "#000" }}
+          style={{ backgroundColor: "#000", paddingTop: 16 }}
           contentContainerStyle={{ paddingInline: 16 }}
           data={data}
           ListHeaderComponent={() => (
@@ -223,17 +233,12 @@ export default function SearchScreen() {
             </Link>
           )}
         />
-      </SafeAreaView>
+      </KeyboardAvoidingView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    height: "auto",
-    width: "100%",
-  },
   episodeImage: {
     flex: 1,
     height: 195,

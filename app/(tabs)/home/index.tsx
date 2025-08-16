@@ -30,12 +30,16 @@ export default function HomeScreen() {
 
   const sections = [
     {
-      title: "Must-See Picks of the Day",
+      title: "Picks of the Day",
       data: slice(suffledData, 0, 10),
     },
     {
-      title: "Trending & Hidden Gems",
+      title: "Trending",
       data: slice(suffledData, 10, 20),
+    },
+    {
+      title: "Hidden Gems",
+      data: slice(suffledData, 20, 30),
     },
   ];
 
@@ -54,13 +58,16 @@ export default function HomeScreen() {
         backgroundColor: "#000",
         paddingInline: 16,
       }}
+      contentContainerStyle={{
+        paddingBottom: 100,
+      }}
       keyExtractor={(item) => toString(item.id)}
       ListHeaderComponent={() => (
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: insets.top * 2,
+            marginTop: insets.top,
             paddingTop: insets.top,
             paddingBottom: insets.top / 2,
           }}

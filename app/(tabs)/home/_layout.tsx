@@ -7,6 +7,8 @@ export default function HomeLayout() {
         headerShown: true,
         headerTransparent: true,
         title: "",
+        headerTintColor: "#fff",
+        statusBarStyle: "inverted",
       }}
     >
       <Stack.Screen name="index" />
@@ -14,12 +16,7 @@ export default function HomeLayout() {
       <Stack.Screen name="episodes/[id]" options={{ presentation: "modal" }} />
       <Stack.Screen name="people/[id]" options={{ presentation: "modal" }} />
       <Stack.Screen name="favorites" />
-      <Stack.Screen
-        name="search"
-        options={{
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen name="search" />
     </Stack>
   );
 }

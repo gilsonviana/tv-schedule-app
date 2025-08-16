@@ -1,7 +1,7 @@
 import { TvImageObj } from "@/constants/Types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import { findIndex } from "lodash";
+import { findIndex, size } from "lodash";
 
 type RecentlyObj = {
   id: number;
@@ -35,6 +35,14 @@ const { actions, reducer } = createSlice({
         findIndex(state[action.payload.type], {
           id: action.payload.id,
         }) >= 0;
+
+      // Doc: Limits the number of recently viewd items to avoid running out of memory.
+      if (size(state[action.payload.type]) >= 10) {
+        return {
+          ...state,
+        };
+      }
+
       return {
         ...state,
         [action.payload.type]: !alreadyAdded
@@ -42,17 +50,8 @@ const { actions, reducer } = createSlice({
           : state[action.payload.type],
       };
     },
-    clearRecently: (
-      state,
-      action: PayloadAction<{ type: "shows" | "episodes" | "people" }>
-    ) => {
-      return {
-        ...state,
-        [action.payload.type]: undefined,
-      };
-    },
   },
 });
-export const { addRecently, clearRecently } = actions;
+export const { addRecently } = actions;
 
 export default reducer;

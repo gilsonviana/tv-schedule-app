@@ -18,10 +18,20 @@ export default function TabExploreScreen() {
     <Animated.FlatList
       style={{
         backgroundColor: "#000",
-        paddingInline: 16,
         paddingTop: insets.top + 36,
       }}
+      contentContainerStyle={{
+        paddingInline: 16,
+      }}
       data={data}
+      initialNumToRender={3}
+      maxToRenderPerBatch={3}
+      removeClippedSubviews
+      getItemLayout={(_, index) => ({
+        length: 146,
+        offset: (146 + 16) * index,
+        index,
+      })}
       keyExtractor={(item) => toString(item.id) + "-" + size}
       onEndReached={() => !isValidating && setSize(size + 1)}
       renderItem={({ item }) => <SearchListItem isShows show={item} />}

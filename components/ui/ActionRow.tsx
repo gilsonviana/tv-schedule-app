@@ -4,7 +4,7 @@ interface ActionRowProps {
   label?: string;
 }
 interface ActionRowProps {
-  toggle: true;
+  toggle: boolean;
   value?: boolean;
   onValueChange?: VoidFunction;
 }
@@ -16,10 +16,11 @@ export const ActionRow = ({
   onValueChange,
 }: ActionRowProps) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="action-row">
       <Text style={styles.text}>{label}</Text>
       {toggle && (
         <Switch
+          testID="action-row-switch"
           trackColor={{ true: "#555", false: "#555" }}
           onValueChange={onValueChange}
           value={value}

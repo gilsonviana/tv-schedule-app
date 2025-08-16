@@ -9,13 +9,13 @@ import { isEmpty, toString } from "lodash";
 import { StrippedText } from "@/components/ui/StrippedText";
 import { Badge } from "@/components/ui/Badge";
 import Animated from "react-native-reanimated";
-import { blurhash } from "@/constants/Misc";
 import { ListItem } from "@/components/ui/ListItem";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
 import { TitleRow } from "@/components/ui/TitleRow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RecentlyViewed } from "@/components/ui/RecentlyViewed";
+import { blurhash } from "@/constants/Colors";
 
 export default function ShowsEpisodeDetailScreen() {
   const dispatch = useDispatch();
@@ -61,7 +61,9 @@ export default function ShowsEpisodeDetailScreen() {
           })}
         </Text>
       )}
-      <StrippedText style={{ color: "#fff" }}>{data?.summary}</StrippedText>
+      <StrippedText style={{ color: "#fff", fontSize: 16 }}>
+        {data?.summary}
+      </StrippedText>
       {!isEmpty(data?._embedded?.guestcast) && (
         <>
           <SectionTitle text="Guest Cast" />

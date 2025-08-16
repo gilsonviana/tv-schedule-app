@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { View, Text, StyleSheet, ViewStyle } from "react-native";
 
 interface BadgeProps {
@@ -7,8 +8,14 @@ interface BadgeProps {
 }
 
 export const Badge = ({ text, outlined, style }: BadgeProps) => {
+  if (isEmpty(text)) {
+    return null;
+  }
   return (
-    <View style={[styles.container, outlined ? styles.outlined : {}, style]}>
+    <View
+      style={[styles.container, outlined ? styles.outlined : {}, style]}
+      testID="badge"
+    >
       <Text style={[styles.text, outlined ? styles.textOutlined : {}]}>
         {text}
       </Text>

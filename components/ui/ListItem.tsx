@@ -1,9 +1,10 @@
 import { View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
 import { TvShow, TvShowCast } from "@/constants/Types";
-import { blurhash } from "@/constants/Misc";
 import { Link, LinkProps } from "expo-router";
 import { includes } from "lodash";
+import Skeleton from "./Skeleton";
+import { blurhash } from "@/constants/Colors";
 
 type ItemBaseProps = TvShow & TvShowCast;
 
@@ -60,6 +61,19 @@ const Item = ({
           <Text style={{ color: "#ddd", fontSize: 16 }}>{character?.name}</Text>
         </>
       )}
+    </View>
+  );
+};
+
+export const ListItemSkeleton = () => {
+  return (
+    <View>
+      <Skeleton width={120} height={24} />
+      <View style={{ flexDirection: "row" }}>
+        <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
+        <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
+        <Skeleton width={125} height={195} />
+      </View>
     </View>
   );
 };

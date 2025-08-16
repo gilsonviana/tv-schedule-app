@@ -15,12 +15,12 @@ import { openBrowserAsync } from "expo-web-browser";
 import { Badge } from "@/components/ui/Badge";
 import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
-import { blurhash } from "@/constants/Misc";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
 import { ListItem } from "@/components/ui/ListItem";
 import { TitleRow } from "@/components/ui/TitleRow";
 import { EpisodeListItem } from "@/components/ui/EpisodeListItem";
+import { blurhash } from "@/constants/Colors";
 
 export default function ShowsDetailScreen() {
   const dispatch = useDispatch();
@@ -69,7 +69,9 @@ export default function ShowsDetailScreen() {
         image={data?.image}
       />
       <GenreBadges genres={data?.genres} />
-      <StrippedText style={{ color: "#fff" }}>{data?.summary}</StrippedText>
+      <StrippedText style={{ color: "#fff", fontSize: 16 }}>
+        {data?.summary}
+      </StrippedText>
       {size(data?._embedded?.cast) > 0 && (
         <>
           <Text
@@ -85,6 +87,14 @@ export default function ShowsDetailScreen() {
           </Text>
           <Animated.FlatList
             horizontal
+            initialNumToRender={3}
+            maxToRenderPerBatch={3}
+            removeClippedSubviews
+            getItemLayout={(_, index) => ({
+              length: 250,
+              offset: (250 + 8) * index,
+              index,
+            })}
             data={data?._embedded?.cast}
             keyExtractor={(item) => toString(item.character.id)}
             renderItem={({ item }) => (
@@ -213,6 +223,14 @@ export default function ShowsDetailScreen() {
       <Animated.FlatList
         keyExtractor={(item) => toString(item.id)}
         data={seasonEpisodesData}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        removeClippedSubviews
+        getItemLayout={(_, index) => ({
+          length: 211,
+          offset: (211 + 24) * index,
+          index,
+        })}
         renderItem={({ item }) => <EpisodeListItem {...item} />}
       />
     </ParallaxFlatList>
@@ -224,12 +242,5 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "auto",
     width: "100%",
-  },
-  castImage: {
-    flex: 1,
-    height: 250,
-    width: 250,
-    aspectRatio: 9 / 16,
-    borderRadius: 4,
   },
 });

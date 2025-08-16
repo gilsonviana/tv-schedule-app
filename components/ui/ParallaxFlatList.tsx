@@ -26,7 +26,6 @@ export const ParallaxFlatList = ({
   const colorScheme = useColorScheme() ?? "light";
   const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
 
-  // ✅ Track scroll position manually
   const scrollOffset = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -59,11 +58,11 @@ export const ParallaxFlatList = ({
     <View style={styles.container}>
       <Animated.FlatList
         ref={scrollRef}
-        data={[]} // no items, only header
+        data={[]}
         keyExtractor={(_, index) => index.toString()}
         renderItem={null}
         scrollEventThrottle={16}
-        onScroll={onScroll} // ✅ hook up scroll handler
+        onScroll={onScroll}
         ListHeaderComponent={
           <>
             {headerImage && (
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 32,
+    padding: 16,
     gap: 16,
     overflow: "hidden",
   },

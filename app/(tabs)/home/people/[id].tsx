@@ -11,15 +11,14 @@ import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
 import { isEmpty, last, map, size, slice, split, toString } from "lodash";
 import Animated from "react-native-reanimated";
-import Skeleton from "@/components/ui/Skeleton";
 import { useBatchFetch } from "@/hooks/useBatchFetch";
-import { blurhash } from "@/constants/Misc";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
-import { ListItem } from "@/components/ui/ListItem";
+import { ListItem, ListItemSkeleton } from "@/components/ui/ListItem";
 import { TitleRow } from "@/components/ui/TitleRow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RecentlyViewed } from "@/components/ui/RecentlyViewed";
+import { blurhash } from "@/constants/Colors";
 
 export default function PeopleDetailScreen() {
   const dispatch = useDispatch();
@@ -70,16 +69,7 @@ export default function PeopleDetailScreen() {
           })}
         </Text>
       )}
-      {isLoadingShows && isEmpty(shows) && (
-        <>
-          <Skeleton width={120} height={24} />
-          <View style={{ flexDirection: "row" }}>
-            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
-            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
-            <Skeleton width={125} height={195} />
-          </View>
-        </>
-      )}
+      {isLoadingShows && isEmpty(shows) && <ListItemSkeleton />}
       {!isLoadingShows && size(shows) > 0 && (
         <>
           <SectionTitle text="Cast" />
@@ -108,16 +98,7 @@ export default function PeopleDetailScreen() {
           />
         </>
       )}
-      {isLoadingEpisodes && isEmpty(episodes) && (
-        <>
-          <Skeleton width={120} height={24} />
-          <View style={{ flexDirection: "row" }}>
-            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
-            <Skeleton width={125} height={195} style={{ marginRight: 16 }} />
-            <Skeleton width={125} height={195} />
-          </View>
-        </>
-      )}
+      {isLoadingEpisodes && isEmpty(episodes) && <ListItemSkeleton />}
       {!isLoadingEpisodes && size(episodes) > 0 && (
         <>
           <SectionTitle text="Guest Cast" />

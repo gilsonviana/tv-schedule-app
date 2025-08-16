@@ -5,14 +5,29 @@ import { useDispatch } from "react-redux";
 import { Image } from "expo-image";
 import { CollapsibleText } from "./CollapsibleText";
 import { GenreBadges } from "./GenreBadges";
-import { TvSearchResult } from "@/constants/Types";
-import { blurhash } from "@/constants/Misc";
+import { TvSearchResult, TvShow } from "@/constants/Types";
+import Skeleton from "./Skeleton";
+import { blurhash } from "@/constants/Colors";
 
-type SearchListItemBaseProps = TvSearchResult;
-
-interface SearchListItemProps extends SearchListItemBaseProps {
+type SearchListItemBaseProps = TvSearchResult & TvShow;
+interface SearchListItemProps extends Partial<SearchListItemBaseProps> {
   isShows?: boolean;
 }
+
+export const SearchListItemSkeleton = () => {
+  return (
+    <View
+      style={{ flexDirection: "row", marginBottom: 16 }}
+    >
+      <Skeleton width={90} height={150} />
+      <View style={{ marginLeft: 16 }}>
+        <Skeleton width={90} height={24} style={{ marginVertical: 8 }} />
+        <Skeleton width={120} height={24} />
+        <Skeleton width={150} height={64} style={{ marginTop: 8 }} />
+      </View>
+    </View>
+  );
+};
 
 export const SearchListItem = ({
   isShows,
@@ -30,9 +45,9 @@ export const SearchListItem = ({
         dispatch(
           addRecently({
             type: "shows",
-            id: show?.id,
-            image: show?.image,
-            name: show?.name,
+            id: show?.id!,
+            image: show?.image!,
+            name: show?.name!,
           })
         )
       }

@@ -13,7 +13,12 @@ interface FavoriteButtonProps extends FavoriteObj {
   type: "shows" | "episodes";
 }
 
-export const FavoriteButton = ({ id, image, name, type }: FavoriteButtonProps) => {
+export const FavoriteButton = ({
+  id,
+  image,
+  name,
+  type,
+}: FavoriteButtonProps) => {
   const { favoriteShows, favoriteEpisodes } = useSelector(
     (state: RootState) => state.favorites
   );
@@ -30,7 +35,7 @@ export const FavoriteButton = ({ id, image, name, type }: FavoriteButtonProps) =
   };
 
   return (
-    <TouchableOpacity onPress={handler}>
+    <TouchableOpacity onPress={handler} testID="favorite-button">
       <AntDesign
         name={isFavorite ? "heart" : "hearto"}
         size={24}

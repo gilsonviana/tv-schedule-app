@@ -1,20 +1,20 @@
+import "react-native-reanimated";
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from "react-native-safe-area-context";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import store from "@/store";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Provider as ReduxProvider } from "react-redux";
-import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import store from "@/store";
 import { BiometricsProvider } from "@/components/provider/Biometrics";
-import {
-  SafeAreaProvider,
-  initialWindowMetrics,
-} from "react-native-safe-area-context";
 import { ToastsProvider } from "@/components/provider/Toasts";
 
 export default function RootLayout() {

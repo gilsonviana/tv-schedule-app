@@ -7,7 +7,7 @@ interface PillButtonProps {
 
 export const PillButton = ({ onPress, text }: PillButtonProps) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={onPress} testID="pill-button">
       <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>
   );

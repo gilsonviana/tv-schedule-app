@@ -28,7 +28,7 @@ export const TitleRow = ({
   favoriteType,
 }: TitleRowProps) => {
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID="title-row">
       <Text style={styles.text}>{number ? `${number}. ${name}` : name}</Text>
       {favoriteType && image && (
         <FavoriteButton

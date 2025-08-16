@@ -1,22 +1,19 @@
 import { searchQueryUrl } from "@/constants/ApiRoutes";
 import { TvSearchResult } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
-import {
-  View,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { View, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
 import { useMemo, useRef, useState } from "react";
-import Skeleton from "@/components/ui/Skeleton";
 import { PillButton } from "@/components/ui/PillButton";
 import { Picker } from "@react-native-picker/picker";
 import { map } from "lodash";
 import { MessageBox } from "@/components/ui/MessageBox";
-import { SearchListItem } from "@/components/ui/SearchListItem";
+import {
+  SearchListItem,
+  SearchListItemSkeleton,
+} from "@/components/ui/SearchListItem";
 
 const FILTER_OPTIONS = [
   {
@@ -103,17 +100,7 @@ export default function SearchScreen() {
 
     if (isLoading) {
       return Array.from({ length: 3 }).map((_, i) => (
-        <View
-          key={`skeleton-${i}`}
-          style={{ flexDirection: "row", marginBottom: 16 }}
-        >
-          <Skeleton width={90} height={150} />
-          <View style={{ marginLeft: 16 }}>
-            <Skeleton width={90} height={24} style={{ marginVertical: 8 }} />
-            <Skeleton width={120} height={24} />
-            <Skeleton width={150} height={64} style={{ marginTop: 8 }} />
-          </View>
-        </View>
+        <SearchListItemSkeleton key={`skeleton-${i}`} />
       ));
     }
 

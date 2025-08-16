@@ -14,19 +14,16 @@ export interface FavoriteState {
   favoriteEpisodes?: FavoriteObj[];
 }
 
-export const initialState: FavoriteState = {
+export const favoritesInitialState: FavoriteState = {
   favoriteShows: undefined,
   favoriteEpisodes: undefined,
 };
 
 const { actions, reducer } = createSlice({
   name: "favorites",
-  initialState,
+  initialState: favoritesInitialState,
   reducers: {
-    toggleFavoriteShow: (
-      state,
-      action: PayloadAction<FavoriteObj>
-    ) => {
+    toggleFavoriteShow: (state, action: PayloadAction<FavoriteObj>) => {
       return {
         ...state,
         favoriteShows: xorBy(
@@ -36,10 +33,7 @@ const { actions, reducer } = createSlice({
         ),
       };
     },
-    toggleFavoriteEpisode: (
-      state,
-      action: PayloadAction<FavoriteObj>
-    ) => {
+    toggleFavoriteEpisode: (state, action: PayloadAction<FavoriteObj>) => {
       return {
         ...state,
         favoriteEpisodes: xorBy(

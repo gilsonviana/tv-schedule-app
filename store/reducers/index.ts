@@ -1,10 +1,14 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import UserReducer, { UserState } from "./user";
-import FavoritesReducer, { FavoriteState } from "./favorites";
-import RecentlyReducer, { RecentlyState } from "./recently";
+import FavoritesReducer, {
+  favoritesInitialState,
+  FavoriteState,
+} from "./favorites";
+import RecentlyReducer, {
+  recentlyInitialState,
+  RecentlyState,
+} from "./recently";
 
 const appReducer = combineReducers({
-  user: UserReducer,
   favorites: FavoritesReducer,
   recently: RecentlyReducer,
 });
@@ -19,11 +23,18 @@ const rootReducer = (
       ...action.payload,
     };
   }
+
+  if (action.type === "RESET") {
+    return {
+      favorites: favoritesInitialState,
+      recently: recentlyInitialState,
+    };
+  }
+
   return appReducer(state, action);
 };
 
 export type RootState = {
-  user: UserState;
   favorites: FavoriteState;
   recently: RecentlyState;
 };

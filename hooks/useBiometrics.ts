@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
 import * as LocalAuthentication from "expo-local-authentication";
+import { getState, saveState } from "@/store";
 
-interface UseBiometricsParams {
-  shouldPromptBiometric?: boolean;
-}
-
-export const useBiometrics = ({
-  shouldPromptBiometric,
-}: UseBiometricsParams) => {
+export const useBiometrics = () => {
+  const [biometricPreference, setBiometricPreference] = useState<boolean>();
   const [hasBiometricSupport, setHasBiometricSupport] = useState<boolean>();
   const [hasSavedBiometric, setHasSavedBiometric] = useState<boolean>();
   const [hasSuccessBiometric, setHasSuccessBiometric] = useState<boolean>();
+
+  const toggleBiometricPreference = async () => {
+    await saveState("biometricPreference", !biometricPreference);
+    setBiometricPreference(!biometricPreference);
+  };
+
+  useEffect(() => {
+    const fetchBiometricPreference = async () => {
+      const biometricPreference = await getState<boolean>(
+        "biometricPreference"
+      );
+      setBiometricPreference(biometricPreference);
+    };
+    fetchBiometricPreference();
+  }, []);
 
   useEffect(() => {
     const verifyBiometricSupport = async () => {
@@ -41,14 +52,15 @@ export const useBiometrics = ({
         setHasSuccessBiometric(biometricAuth.success);
       }
     };
-    if (shouldPromptBiometric && hasBiometricSupport && !hasSavedBiometric) {
+    if (biometricPreference && hasBiometricSupport && !hasSavedBiometric) {
       promptBiometric();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldPromptBiometric, hasBiometricSupport, hasSavedBiometric]);
+  }, [biometricPreference, hasBiometricSupport, hasSavedBiometric]);
 
   return {
     hasSavedBiometric,
     hasSuccessBiometric,
+    biometricPreference,
+    toggleBiometricPreference,
   };
 };

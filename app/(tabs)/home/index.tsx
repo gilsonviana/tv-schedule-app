@@ -16,21 +16,14 @@ import { useReduxHydrate } from "@/hooks/useReduxHydrate";
 import { ListItem } from "@/components/ListItem";
 
 export default function HomeScreen() {
-  const userPreferences = useSelector((state: RootState) => state.user);
   const { shows: recentlyShows } = useSelector(
     (state: RootState) => state.recently
   );
-  const { hasSuccessBiometric } = useBiometrics({
-    shouldPromptBiometric: userPreferences.requestBiometric,
-  });
+  const { hasSuccessBiometric } = useBiometrics();
   const { rehydrated } = useReduxHydrate({
     shouldHydrate: hasSuccessBiometric,
   });
-  console.log({
-    requestBiometric: userPreferences.requestBiometric,
-    hasSuccessBiometric,
-    rehydrated,
-  });
+
   const dispatch = useDispatch();
   const { data } = useCustomSWR<TvShow[]>(getTvShows());
   const suffledData = shuffle(data);

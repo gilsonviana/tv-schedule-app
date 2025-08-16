@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { getTvPeopleById } from "@/constants/ApiRoutes";
 import {
@@ -9,40 +9,23 @@ import {
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
-import {
-  filter,
-  isEmpty,
-  last,
-  map,
-  size,
-  slice,
-  split,
-  toNumber,
-  toString,
-} from "lodash";
-import { ThemedText } from "@/components/ThemedText";
+import { isEmpty, last, map, size, slice, split, toString } from "lodash";
 import Animated from "react-native-reanimated";
 import Skeleton from "@/components/Skeleton";
 import { useBatchFetch } from "@/hooks/useBatchFetch";
 import { blurhash } from "@/constants/Misc";
-import { RootState } from "@/store/reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
 import { ListItem } from "@/components/ListItem";
+import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { TitleRow } from "@/components/TitleRow";
+import { SectionTitle } from "@/components/SectionTitle";
 
 export default function PeopleDetailScreen() {
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
   const { data } = useCustomSWR<TvShowPeopleDetail>(
     getTvPeopleById(toString(id))
-  );
-  const { people: recentlyPeople } = useSelector(
-    (state: RootState) => state.recently
-  );
-
-  const filteredRecentlyPeople = filter(
-    recentlyPeople,
-    (people) => people.id !== toNumber(id)
   );
 
   const guestCastLinks = map(
@@ -76,25 +59,16 @@ export default function PeopleDetailScreen() {
       }}
       style={{ backgroundColor: "#000" }}
     >
-      <ThemedText
-        style={{
-          color: "#fff",
-          fontWeight: "700",
-          fontSize: 32,
-          lineHeight: 32,
-        }}
-      >
-        {data?.name}
-      </ThemedText>
+      <TitleRow name={data?.name} />
       {data?.birthday && (
-        <ThemedText style={{ color: "#ddd", fontSize: 14 }}>
+        <Text style={{ color: "#ddd", fontSize: 14 }}>
           Born on {""}
           {new Date(data.birthday).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
           })}
-        </ThemedText>
+        </Text>
       )}
       {isLoadingShows && isEmpty(shows) && (
         <>
@@ -108,17 +82,7 @@ export default function PeopleDetailScreen() {
       )}
       {!isLoadingShows && size(shows) > 0 && (
         <>
-          <ThemedText
-            style={{
-              fontWeight: "700",
-              fontSize: 21,
-              marginTop: 24,
-              marginBottom: 8,
-              color: "#fff",
-            }}
-          >
-            Cast
-          </ThemedText>
+          <SectionTitle text="Cast" />
           <Animated.FlatList
             horizontal
             data={shows}
@@ -140,35 +104,6 @@ export default function PeopleDetailScreen() {
                   )
                 }
               />
-              // <Link
-              //   href={`../shows/${item.id}`}
-              //   style={{ marginRight: 16 }}
-              //   onPress={() =>
-              //     dispatch(
-              //       addRecently({
-              //         type: "shows",
-              //         id: item.id,
-              //         image: item.image,
-              //         name: item.name,
-              //       })
-              //     )
-              //   }
-              // >
-              //   <View>
-              //     <Image
-              //       source={item?.image?.original ?? item?.image?.medium}
-              //       style={styles.image}
-              //       placeholder={{ blurhash }}
-              //       contentFit="cover"
-              //       contentPosition="top center"
-              //     />
-              //     <ThemedText
-              //       style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-              //     >
-              //       {item.name}
-              //     </ThemedText>
-              //   </View>
-              // </Link>
             )}
           />
         </>
@@ -185,17 +120,7 @@ export default function PeopleDetailScreen() {
       )}
       {!isLoadingEpisodes && size(episodes) > 0 && (
         <>
-          <ThemedText
-            style={{
-              fontWeight: "700",
-              fontSize: 21,
-              marginTop: 24,
-              marginBottom: 8,
-              color: "#fff",
-            }}
-          >
-            Guest Cast
-          </ThemedText>
+          <SectionTitle text="Guest Cast" />
           <Animated.FlatList
             horizontal
             data={episodes}
@@ -203,7 +128,7 @@ export default function PeopleDetailScreen() {
             renderItem={({ item }) => (
               <View style={{ marginRight: 16 }}>
                 <ListItem
-                  variant="guest"
+                  variant="cast"
                   item={item}
                   href={`../episodes/${item.id}`}
                   onPress={() =>
@@ -221,55 +146,20 @@ export default function PeopleDetailScreen() {
                   href={`../shows/${last(split(item._links.show.href, "/"))}`}
                   style={{ marginRight: 16 }}
                 >
-                  <ThemedText style={{ color: "#ddd", marginTop: 8 }}>
+                  <Text style={{ color: "#ddd", marginTop: 8 }}>
                     {item._links.show.name}
-                  </ThemedText>
+                  </Text>
                 </Link>
               </View>
             )}
           />
         </>
       )}
-      {!isEmpty(filteredRecentlyPeople) && (
-        <>
-          <ThemedText
-            style={{
-              fontWeight: "700",
-              fontSize: 21,
-              marginTop: 24,
-              marginBottom: 8,
-              color: "#fff",
-            }}
-          >
-            Recently Viewed
-          </ThemedText>
-          <Animated.FlatList
-            horizontal
-            data={filteredRecentlyPeople}
-            keyExtractor={(item) => toString(item.id)}
-            renderItem={({ item }) => (
-              <View style={{ marginRight: 16 }}>
-                <Link href={`../people/${item.id}`}>
-                  <View>
-                    <Image
-                      source={item?.image?.original ?? item?.image?.medium}
-                      style={styles.image}
-                      placeholder={{ blurhash }}
-                      contentFit="cover"
-                      contentPosition="top center"
-                    />
-                    <ThemedText
-                      style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}
-                    >
-                      {item.name}
-                    </ThemedText>
-                  </View>
-                </Link>
-              </View>
-            )}
-          />
-        </>
-      )}
+      <RecentlyViewed
+        style={{ marginTop: 24 }}
+        variant="people"
+        currentId={id as string}
+      />
     </ParallaxScrollView>
   );
 }

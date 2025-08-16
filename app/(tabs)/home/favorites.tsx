@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/ThemedText";
 import { SectionList, View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
@@ -12,6 +11,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useRef, useState } from "react";
 import { PillButton } from "@/components/PillButton";
 import { MessageBox } from "@/components/MessageBox";
+import { SectionTitle } from "@/components/SectionTitle";
 
 const SORT_OPTIONS = [
   {
@@ -107,11 +107,9 @@ export default function FavoriteScreen() {
                 justifyContent: "space-between",
               }}
             >
-              <ThemedText
-                style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}
-              >
+              <Text style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}>
                 Your Favorites
-              </ThemedText>
+              </Text>
             </View>
             <View style={{ alignItems: "flex-start", marginTop: 16 }}>
               <PillButton
@@ -123,16 +121,7 @@ export default function FavoriteScreen() {
         )}
         renderSectionHeader={({ section }) => (
           <>
-            <ThemedText
-              style={{
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: 21,
-                paddingVertical: 16,
-              }}
-            >
-              {section.title}
-            </ThemedText>
+            <SectionTitle text={section.title} />
             <Animated.FlatList
               horizontal
               showsHorizontalScrollIndicator={false}

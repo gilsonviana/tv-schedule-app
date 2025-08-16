@@ -15,7 +15,7 @@ export interface RecentlyState {
   people?: RecentlyObj[];
 }
 
-export const initialState: RecentlyState = {
+export const recentlyInitialState: RecentlyState = {
   shows: undefined,
   episodes: undefined,
   people: undefined,
@@ -23,7 +23,7 @@ export const initialState: RecentlyState = {
 
 const { actions, reducer } = createSlice({
   name: "recently",
-  initialState,
+  initialState: recentlyInitialState,
   reducers: {
     addRecently: (
       state,

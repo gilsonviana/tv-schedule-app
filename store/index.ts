@@ -22,6 +22,16 @@ export async function getState<T>(key: string): Promise<T | undefined> {
   }
 }
 
+export async function deleteState(): Promise<true | undefined> {
+  try {
+    await SecureStore.deleteItemAsync("reduxState");
+    return true;
+  } catch (error) {
+    console.error("Error deleting state from SecureStore", error);
+    return undefined;
+  }
+}
+
 export const PERSIST_KEY = "reduxState";
 
 export const persistMiddleware: Middleware =

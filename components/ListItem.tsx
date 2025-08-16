@@ -8,7 +8,13 @@ import { includes } from "lodash";
 type ItemBaseProps = TvShow & TvShowCast;
 
 interface ItemProps extends ItemBaseProps {
-  variant: "shows" | "people" | "episode" | "cast" | "guest";
+  variant:
+    | "shows"
+    | "people"
+    | "episodes"
+    | "cast"
+    | "guest"
+    | "recently-people";
 }
 
 interface ListItemProps
@@ -24,11 +30,8 @@ const Item = ({
   person,
   character,
 }: Partial<ItemProps>) => {
-  const isPeople = variant === "people";
-  const isGuest = variant === "guest";
-
   const getImageSource = () => {
-    if (isPeople) {
+    if (includes(["people", "guest"], variant)) {
       return person?.image?.original || person?.image?.medium;
     }
     return image?.original || image?.medium;
@@ -42,14 +45,16 @@ const Item = ({
   return (
     <View>
       <Image
-        style={getImageStyle()}
+        style={[getImageStyle()]}
         source={getImageSource()}
         placeholder={{ blurhash }}
         contentFit="cover"
         contentPosition="top center"
       />
-      {isGuest && <Text style={styles.name}>{name}</Text>}
-      {isPeople && (
+      {includes(["episodes", "cast", "recently-people"], variant) && (
+        <Text style={styles.name}>{name}</Text>
+      )}
+      {includes(["people", "guest"], variant) && (
         <>
           <Text style={styles.name}>{person?.name}</Text>
           <Text style={{ color: "#ddd", fontSize: 16 }}>{character?.name}</Text>

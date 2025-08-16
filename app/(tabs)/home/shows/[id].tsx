@@ -4,8 +4,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { getTvEpisodesBySeasonId, getTvShowById } from "@/constants/ApiRoutes";
 import { TvShowDetail, TvShowEpisode } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
-import { Link, useLocalSearchParams } from "expo-router";
-import { map, size, toNumber, toString } from "lodash";
+import { useLocalSearchParams } from "expo-router";
+import { map, size, toString } from "lodash";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
 import { GenreBadges } from "@/components/GenreBadges";
@@ -16,10 +16,11 @@ import { Badge } from "@/components/Badge";
 import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import { blurhash } from "@/constants/Misc";
-import { FavoriteButton } from "@/components/FavoriteButton";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
 import { ListItem } from "@/components/ListItem";
+import { TitleRow } from "@/components/TitleRow";
+import { EpisodeListItem } from "@/components/EpisodeListItem";
 
 export default function ShowsDetailScreen() {
   const dispatch = useDispatch();
@@ -61,25 +62,12 @@ export default function ShowsDetailScreen() {
       }}
       style={{ backgroundColor: "#000" }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "#fff", fontWeight: "700", fontSize: 32 }}>
-          {data?.name}
-        </Text>
-        {data?.image && (
-          <FavoriteButton
-            type="shows"
-            id={toNumber(id)}
-            image={data.image}
-            name={data.name}
-          />
-        )}
-      </View>
+      <TitleRow
+        favoriteType="shows"
+        name={data?.name}
+        id={id as string}
+        image={data?.image}
+      />
       <GenreBadges genres={data?.genres} />
       <ThemedText stripped style={{ color: "#fff" }}>
         {data?.summary}
@@ -104,7 +92,7 @@ export default function ShowsDetailScreen() {
             renderItem={({ item }) => (
               <ListItem
                 item={item}
-                variant="people"
+                variant="guest"
                 style={{ marginRight: 16 }}
                 href={`/home/people/${item.person.id}`}
                 onPress={() =>
@@ -227,55 +215,7 @@ export default function ShowsDetailScreen() {
       <Animated.FlatList
         keyExtractor={(item) => toString(item.id)}
         data={seasonEpisodesData}
-        renderItem={({ item }) => (
-          <Link
-            href={`/home/episodes/${item.id}`}
-            style={{ marginBottom: 24 }}
-            onPress={() =>
-              dispatch(
-                addRecently({
-                  type: "episodes",
-                  id: item.id,
-                  image: item.image,
-                  name: item.name,
-                })
-              )
-            }
-          >
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  style={styles.episodeImage}
-                  placeholder={{ blurhash }}
-                  contentFit="cover"
-                  contentPosition="top center"
-                  source={item.image?.original ?? item.image?.medium}
-                />
-                <View style={{ flex: 2, marginLeft: 8 }}>
-                  <ThemedText style={{ color: "#fff", fontSize: 14 }}>
-                    {item.number}. {item.name}
-                  </ThemedText>
-                  <ThemedText
-                    style={{ color: "#fff", marginTop: 8, fontSize: 14 }}
-                  >
-                    Rating: {item.rating.average}
-                  </ThemedText>
-                </View>
-              </View>
-              <ThemedText
-                stripped
-                style={{ color: "#fff", marginTop: 8, fontSize: 14 }}
-              >
-                {item.summary}
-              </ThemedText>
-            </View>
-          </Link>
-        )}
+        renderItem={({ item }) => <EpisodeListItem {...item} />}
       />
     </ParallaxScrollView>
   );
@@ -293,11 +233,5 @@ const styles = StyleSheet.create({
     width: 250,
     aspectRatio: 9 / 16,
     borderRadius: 4,
-  },
-  episodeImage: {
-    flex: 1,
-    height: 125,
-    width: 195,
-    borderRadius: 6,
   },
 });

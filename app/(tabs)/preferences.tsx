@@ -1,13 +1,26 @@
-import { RootState } from "@/store/reducers";
-import { toggleRequestBiometric } from "@/store/reducers/user";
-import { SafeAreaView, ScrollView, Text, Switch, View } from "react-native";
+import { ActionRow } from "@/components/ActionRow";
+import { useBiometrics } from "@/hooks/useBiometrics";
+import store, { deleteState } from "@/store";
+import { useEffect, useState } from "react";
+import { SafeAreaView, ScrollView, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function TabPreferencesScreen() {
   const insets = useSafeAreaInsets();
-  const userPreferences = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
+  const [clearAll, setClearAll] = useState(false);
+  const { biometricPreference, toggleBiometricPreference } = useBiometrics();
+
+  useEffect(() => {
+    const clearAllData = async () => {
+      const deleted = await deleteState();
+      store.dispatch({ type: "RESET" });
+      setClearAll(!deleted);
+    };
+    if (clearAll) {
+      clearAllData();
+    }
+  }, [clearAll]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
@@ -20,20 +33,18 @@ export default function TabPreferencesScreen() {
         <Text style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}>
           Preferences
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "#ddd", fontSize: 18 }}>Request Biometric</Text>
-          <Switch
-            trackColor={{ true: "#555", false: "#555" }}
-            onValueChange={() => dispatch(toggleRequestBiometric())}
-            value={userPreferences.requestBiometric}
-          />
-        </View>
+        <ActionRow
+          label="Request Biometric"
+          toggle
+          value={biometricPreference}
+          onValueChange={() => void toggleBiometricPreference()}
+        />
+        <ActionRow
+          label="Clear all data"
+          toggle
+          value={clearAll}
+          onValueChange={() => setClearAll(true)}
+        />
       </ScrollView>
     </SafeAreaView>
   );

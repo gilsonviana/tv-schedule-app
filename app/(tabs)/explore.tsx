@@ -8,11 +8,11 @@ import { addRecently } from "@/store/reducers/recently";
 import { Link } from "expo-router";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/Misc";
-import { GenreBadges } from "@/components/GenreBadges";
-import { CollapsibleText } from "@/components/CollapsibleText";
+import { GenreBadges } from "@/components/ui/GenreBadges";
+import { CollapsibleText } from "@/components/ui/CollapsibleText";
 import { useCustomInfineSWR } from "@/hooks/useCustomSWR";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Skeleton from "@/components/Skeleton";
+import Skeleton from "@/components/ui/Skeleton";
 
 export default function TabExploreScreen() {
   const insets = useSafeAreaInsets();

@@ -1,10 +1,10 @@
 import { TvShowEpisode } from "@/constants/Types";
 import { addRecently } from "@/store/reducers/recently";
 import { Link } from "expo-router";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { useDispatch } from "react-redux";
 import { Image } from "expo-image";
-import { ThemedText } from "./ThemedText";
+import { StrippedText } from "./StrippedText";
 import { blurhash } from "@/constants/Misc";
 
 type EpisodeListItemProps = TvShowEpisode;
@@ -49,20 +49,17 @@ export const EpisodeListItem = ({
             source={image?.original ?? image?.medium}
           />
           <View style={{ flex: 2, marginLeft: 8 }}>
-            <ThemedText style={{ color: "#fff", fontSize: 14 }}>
+            <Text style={{ color: "#fff", fontSize: 14 }}>
               {number}. {name}
-            </ThemedText>
-            <ThemedText style={{ color: "#fff", marginTop: 8, fontSize: 14 }}>
+            </Text>
+            <Text style={{ color: "#fff", marginTop: 8, fontSize: 14 }}>
               Rating: {rating.average}
-            </ThemedText>
+            </Text>
           </View>
         </View>
-        <ThemedText
-          stripped
-          style={{ color: "#fff", marginTop: 8, fontSize: 14 }}
-        >
+        <StrippedText style={{ color: "#fff", marginTop: 8, fontSize: 14 }}>
           {summary}
-        </ThemedText>
+        </StrippedText>
       </View>
     </Link>
   );

@@ -11,15 +11,15 @@ import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
 import { isEmpty, last, map, size, slice, split, toString } from "lodash";
 import Animated from "react-native-reanimated";
-import Skeleton from "@/components/Skeleton";
+import Skeleton from "@/components/ui/Skeleton";
 import { useBatchFetch } from "@/hooks/useBatchFetch";
 import { blurhash } from "@/constants/Misc";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
-import { ListItem } from "@/components/ListItem";
-import { RecentlyViewed } from "@/components/RecentlyViewed";
-import { TitleRow } from "@/components/TitleRow";
-import { SectionTitle } from "@/components/SectionTitle";
+import { ListItem } from "@/components/ui/ListItem";
+import { TitleRow } from "@/components/ui/TitleRow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import { RecentlyViewed } from "@/components/ui/RecentlyViewed";
 
 export default function PeopleDetailScreen() {
   const dispatch = useDispatch();

@@ -1,5 +1,4 @@
-import { SectionList, View } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
+import { SectionList, View, Text } from "react-native";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { getTvShows } from "@/constants/ApiRoutes";
 import { isEmpty, shuffle, slice, toString } from "lodash";
@@ -12,8 +11,9 @@ import Feather from "@expo/vector-icons/Feather";
 import { addRecently } from "@/store/reducers/recently";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReduxHydrate } from "@/hooks/useReduxHydrate";
-import { ListItem } from "@/components/ListItem";
+import { ListItem } from "@/components/ui/ListItem";
 import { useBiometrics } from "@/components/provider/Biometrics";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 
 export default function HomeScreen() {
   const { shows: recentlyShows } = useSelector(
@@ -65,11 +65,9 @@ export default function HomeScreen() {
             paddingBottom: insets.top / 2,
           }}
         >
-          <ThemedText
-            style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}
-          >
+          <Text style={{ color: "#ddd", fontWeight: "900", fontSize: 28 }}>
             Welcome, Jobsity
-          </ThemedText>
+          </Text>
           <View style={{ flexDirection: "row", gap: 16 }}>
             <Link href="/home/favorites">
               <View>
@@ -84,16 +82,7 @@ export default function HomeScreen() {
       )}
       renderSectionHeader={({ section }) => (
         <>
-          <ThemedText
-            style={{
-              color: "#fff",
-              fontWeight: "700",
-              fontSize: 21,
-              paddingVertical: 16,
-            }}
-          >
-            {section.title}
-          </ThemedText>
+          <SectionTitle text={section.title} />
           <Animated.FlatList
             horizontal
             showsHorizontalScrollIndicator={false}

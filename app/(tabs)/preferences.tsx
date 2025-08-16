@@ -1,4 +1,4 @@
-import { ActionRow } from "@/components/ActionRow";
+import { ActionRow } from "@/components/ui/ActionRow";
 import { useBiometrics } from "@/components/provider/Biometrics";
 import store, { deleteState } from "@/store";
 import { useEffect, useState } from "react";

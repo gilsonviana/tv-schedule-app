@@ -35,10 +35,6 @@ export const BiometricsProvider = ({ children }: { children: ReactNode }) => {
       const biometricPreference = await getState<boolean>(
         "biometricPreference"
       );
-      console.log("BiometricsProvider --->", {
-        biometricPreference,
-        newValue: biometricPreference ?? false,
-      });
       if (!biometricPreference) {
         await saveState("biometricPreference", true);
       }
@@ -69,13 +65,6 @@ export const BiometricsProvider = ({ children }: { children: ReactNode }) => {
       promptBiometric();
     }
   }, [biometricPreference, hasBiometricSupport, hasSuccessBiometric]);
-
-  console.log({
-    biometricPreference,
-    hasBiometricSupport,
-    hasSuccessBiometric,
-    logic: biometricPreference && hasBiometricSupport && !hasSuccessBiometric,
-  });
 
   return (
     <BiometricsContext.Provider

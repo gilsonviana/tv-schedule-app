@@ -1,10 +1,10 @@
 import { View, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { filter, isEmpty, toNumber, toString } from "lodash";
-import { ListItem } from "./ListItem";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/reducers";
 import { SectionTitle } from "./SectionTitle";
+import { ListItem } from "./ListItem";
 
 interface RecentlyViewedProps {
   variant?: "shows" | "episodes" | "people";

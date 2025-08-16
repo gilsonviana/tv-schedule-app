@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
+import { StrippedText } from "@/components/ui/StrippedText";
 import { getTvEpisodesBySeasonId, getTvShowById } from "@/constants/ApiRoutes";
 import { TvShowDetail, TvShowEpisode } from "@/constants/Types";
 import { useCustomSWR } from "@/hooks/useCustomSWR";
@@ -8,19 +8,19 @@ import { useLocalSearchParams } from "expo-router";
 import { map, size, toString } from "lodash";
 import { Image } from "expo-image";
 import Animated from "react-native-reanimated";
-import { GenreBadges } from "@/components/GenreBadges";
+import { GenreBadges } from "@/components/ui/GenreBadges";
 import { hasFlag } from "country-flag-icons";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 import { openBrowserAsync } from "expo-web-browser";
-import { Badge } from "@/components/Badge";
+import { Badge } from "@/components/ui/Badge";
 import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import { blurhash } from "@/constants/Misc";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
-import { ListItem } from "@/components/ListItem";
-import { TitleRow } from "@/components/TitleRow";
-import { EpisodeListItem } from "@/components/EpisodeListItem";
+import { ListItem } from "@/components/ui/ListItem";
+import { TitleRow } from "@/components/ui/TitleRow";
+import { EpisodeListItem } from "@/components/ui/EpisodeListItem";
 
 export default function ShowsDetailScreen() {
   const dispatch = useDispatch();
@@ -69,9 +69,7 @@ export default function ShowsDetailScreen() {
         image={data?.image}
       />
       <GenreBadges genres={data?.genres} />
-      <ThemedText stripped style={{ color: "#fff" }}>
-        {data?.summary}
-      </ThemedText>
+      <StrippedText style={{ color: "#fff" }}>{data?.summary}</StrippedText>
       {size(data?._embedded?.cast) > 0 && (
         <>
           <Text

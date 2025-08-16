@@ -9,9 +9,9 @@ import { isEmpty, map, toString } from "lodash";
 import { blurhash } from "@/constants/Misc";
 import { Picker } from "@react-native-picker/picker";
 import { useRef, useState } from "react";
-import { PillButton } from "@/components/PillButton";
-import { MessageBox } from "@/components/MessageBox";
-import { SectionTitle } from "@/components/SectionTitle";
+import { PillButton } from "@/components/ui/PillButton";
+import { MessageBox } from "@/components/ui/MessageBox";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 
 const SORT_OPTIONS = [
   {

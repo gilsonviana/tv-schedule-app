@@ -6,18 +6,18 @@ import Animated from "react-native-reanimated";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/Misc";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { GenreBadges } from "@/components/GenreBadges";
+import { GenreBadges } from "@/components/ui/GenreBadges";
 import Feather from "@expo/vector-icons/Feather";
-import { CollapsibleText } from "@/components/CollapsibleText";
+import { CollapsibleText } from "@/components/ui/CollapsibleText";
 import { Link } from "expo-router";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
 import { useRef, useState } from "react";
-import Skeleton from "@/components/Skeleton";
-import { PillButton } from "@/components/PillButton";
+import Skeleton from "@/components/ui/Skeleton";
+import { PillButton } from "@/components/ui/PillButton";
 import { Picker } from "@react-native-picker/picker";
 import { map } from "lodash";
-import { MessageBox } from "@/components/MessageBox";
+import { MessageBox } from "@/components/ui/MessageBox";
 
 const FILTER_OPTIONS = [
   {

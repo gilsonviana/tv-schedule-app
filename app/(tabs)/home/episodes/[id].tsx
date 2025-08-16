@@ -6,16 +6,16 @@ import { useCustomSWR } from "@/hooks/useCustomSWR";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { isEmpty, toString } from "lodash";
-import { ThemedText } from "@/components/ThemedText";
-import { Badge } from "@/components/Badge";
+import { StrippedText } from "@/components/ui/StrippedText";
+import { Badge } from "@/components/ui/Badge";
 import Animated from "react-native-reanimated";
 import { blurhash } from "@/constants/Misc";
-import { ListItem } from "@/components/ListItem";
-import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { ListItem } from "@/components/ui/ListItem";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
-import { TitleRow } from "@/components/TitleRow";
-import { SectionTitle } from "@/components/SectionTitle";
+import { TitleRow } from "@/components/ui/TitleRow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import { RecentlyViewed } from "@/components/ui/RecentlyViewed";
 
 export default function ShowsEpisodeDetailScreen() {
   const dispatch = useDispatch();
@@ -61,9 +61,9 @@ export default function ShowsEpisodeDetailScreen() {
           })}
         </Text>
       )}
-      <ThemedText stripped style={{ color: "#fff" }}>
+      <StrippedText style={{ color: "#fff" }}>
         {data?.summary}
-      </ThemedText>
+      </StrippedText>
       {!isEmpty(data?._embedded?.guestcast) && (
         <>
           <SectionTitle text="Guest Cast" />

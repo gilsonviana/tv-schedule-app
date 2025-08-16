@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "test": "jest --config jest.config.js --watchAll"
+    "test": "jest --config jest.config.js --watchAll",
+    "build:android:apk": "eas build -p android --profile preview"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -66,6 +67,13 @@
     "react-test-renderer": "^19.0.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "listUnknownPackages": false
+      }
+    }
   },
   "private": true
 }

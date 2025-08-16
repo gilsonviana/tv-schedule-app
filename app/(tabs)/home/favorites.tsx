@@ -96,9 +96,12 @@ export default function FavoriteScreen() {
         style={{
           flex: 1,
           backgroundColor: "#000",
-          paddingTop: 16
+          paddingTop: 16,
         }}
-        contentContainerStyle={{ paddingInline: 16 }}
+        contentContainerStyle={{
+          paddingInline: 16,
+          paddingBottom: 100,
+        }}
         keyExtractor={(item) => toString(item.id)}
         ListHeaderComponent={() => (
           <View style={{ marginTop: insets.top + 34 }}>

@@ -19,7 +19,7 @@ import { CollapsibleText } from "@/components/ui/CollapsibleText";
 import { Link } from "expo-router";
 import { useDispatch } from "react-redux";
 import { addRecently } from "@/store/reducers/recently";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Skeleton from "@/components/ui/Skeleton";
 import { PillButton } from "@/components/ui/PillButton";
 import { Picker } from "@react-native-picker/picker";
@@ -52,6 +52,54 @@ export default function SearchScreen() {
   );
   const dispatch = useDispatch();
   const key = isShows ? "show" : "person";
+
+  const ListHeader = useMemo(
+    () => (
+      <View style={{ marginBottom: 8 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+            alignItems: "flex-end",
+            gap: 16,
+            marginBottom: 16,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#555",
+              marginTop: insets.top + 34,
+              borderRadius: 6,
+              paddingInline: 8,
+              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
+            }}
+          >
+            <Feather name="search" size={28} color="#ddd" />
+            <TextInput
+              placeholderTextColor="#ddd"
+              style={{ color: "#fff", fontSize: 16, flex: 1 }}
+              placeholder="Type something..."
+              clearButtonMode="while-editing"
+              onChangeText={(text) => setSearchQuery(text)}
+              value={searchQuery}
+              returnKeyType="search"
+              autoFocus
+            />
+          </View>
+        </View>
+        <View style={{ alignItems: "flex-start" }}>
+          <PillButton
+            onPress={() => pickerRef.current?.focus()}
+            text={`Filter: ${filterOption}`}
+          />
+        </View>
+      </View>
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filterOption, searchQuery]
+  );
 
   const RenderEmptyList = () => {
     if (!searchQuery) {
@@ -124,49 +172,7 @@ export default function SearchScreen() {
           style={{ backgroundColor: "#000", paddingTop: 16 }}
           contentContainerStyle={{ paddingInline: 16 }}
           data={data}
-          ListHeaderComponent={() => (
-            <View style={{ marginBottom: 8 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flex: 1,
-                  alignItems: "flex-end",
-                  gap: 16,
-                  marginBottom: 16,
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#555",
-                    marginTop: insets.top + 34,
-                    borderRadius: 6,
-                    paddingInline: 8,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flex: 1,
-                  }}
-                >
-                  <Feather name="search" size={28} color="#ddd" />
-                  <TextInput
-                    placeholderTextColor="#ddd"
-                    style={{ color: "#fff", fontSize: 16, flex: 1 }}
-                    placeholder="Type something..."
-                    clearButtonMode="while-editing"
-                    onChangeText={(text) => setSearchQuery(text)}
-                    value={searchQuery}
-                    returnKeyType="search"
-                    autoFocus
-                  />
-                </View>
-              </View>
-              <View style={{ alignItems: "flex-start" }}>
-                <PillButton
-                  onPress={() => pickerRef.current?.focus()}
-                  text={`Filter: ${filterOption}`}
-                />
-              </View>
-            </View>
-          )}
+          ListHeaderComponent={ListHeader}
           ListEmptyComponent={<RenderEmptyList />}
           renderItem={({ item }) => (
             <Link

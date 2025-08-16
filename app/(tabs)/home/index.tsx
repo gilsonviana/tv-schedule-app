@@ -11,9 +11,9 @@ import { RootState } from "@/store/reducers";
 import Feather from "@expo/vector-icons/Feather";
 import { addRecently } from "@/store/reducers/recently";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useBiometrics } from "@/hooks/useBiometrics";
 import { useReduxHydrate } from "@/hooks/useReduxHydrate";
 import { ListItem } from "@/components/ListItem";
+import { useBiometrics } from "@/components/provider/Biometrics";
 
 export default function HomeScreen() {
   const { shows: recentlyShows } = useSelector(

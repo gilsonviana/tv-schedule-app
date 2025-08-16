@@ -1,5 +1,5 @@
 import { ActionRow } from "@/components/ActionRow";
-import { useBiometrics } from "@/hooks/useBiometrics";
+import { useBiometrics } from "@/components/provider/Biometrics";
 import store, { deleteState } from "@/store";
 import { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, Text } from "react-native";
